@@ -2,9 +2,15 @@
 
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { CalendarDays, Share2, Download, Settings2 } from "lucide-react";
+import { CalendarDays, Share2, RotateCcw, Settings2 } from "lucide-react";
 
-export function TopNav() {
+export function TopNav({
+  onOpenShare,
+  onReset,
+}: {
+  onOpenShare: () => void;
+  onReset: () => void;
+}) {
   return (
     <header className="sticky top-0 z-20 border-b border-zinc-200 bg-white/80 backdrop-blur">
       <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between gap-3 px-4 py-3">
@@ -22,13 +28,13 @@ export function TopNav() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm" onClick={onOpenShare}>
             <Share2 className="h-4 w-4" />
-            Share
+            Share / Import
           </Button>
-          <Button variant="secondary" size="sm">
-            <Download className="h-4 w-4" />
-            Export
+          <Button variant="secondary" size="sm" onClick={onReset}>
+            <RotateCcw className="h-4 w-4" />
+            Reset
           </Button>
           <Button variant="ghost" size="icon" aria-label="Settings">
             <Settings2 className="h-4 w-4" />

@@ -3,6 +3,8 @@ export type Course = {
   title: string;
   semesters: number;
   prereqs: string[];
+  /** Credit value for the course (e.g., 3, 4). Optional for backwards-compat with older JSON. */
+  credits?: number;
   notes?: string;
 };
 
