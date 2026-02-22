@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { GoogleIcon } from "@/components/icons/GoogleIcon";
+import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 import { ArrowRight, CalendarDays, CheckCircle2, LockKeyhole } from "lucide-react";
 
 type Mode = "login" | "signup";
@@ -63,8 +63,8 @@ export function AuthScreen({ mode }: { mode: Mode }) {
             <ButtonLink href="/" variant="ghost" size="sm">
               Back to landing
             </ButtonLink>
-            <ButtonLink href="/planner" variant="secondary" size="sm">
-              Open planner
+            <ButtonLink href="/workspaces" variant="secondary" size="sm">
+              Open workspaces
               <ArrowRight className="h-4 w-4" />
             </ButtonLink>
           </div>
@@ -84,13 +84,7 @@ export function AuthScreen({ mode }: { mode: Mode }) {
           </CardHeader>
           <CardContent>
             <div className="grid gap-4">
-              <button
-                type="button"
-                className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-5 text-base font-medium text-zinc-900 shadow-soft transition hover:bg-zinc-50 active:scale-[0.99]"
-              >
-                <GoogleIcon className="h-5 w-5" />
-                Continue with Google
-              </button>
+              <GoogleSignInButton callbackUrl="/workspaces" />
 
               <div className="flex items-center justify-between gap-3 text-sm">
                 <p className="text-zinc-600">

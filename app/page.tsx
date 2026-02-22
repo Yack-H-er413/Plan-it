@@ -34,8 +34,8 @@ export default function Page() {
           </div>
 
           <nav className="flex items-center gap-2">
-            <ButtonLink variant="ghost" size="sm" href="/planner">
-              Open planner
+            <ButtonLink variant="ghost" size="sm" href="/workspaces">
+              Workspaces
               <ArrowRight className="h-4 w-4" />
             </ButtonLink>
             <ButtonLink variant="secondary" size="sm" href="/login">
@@ -55,7 +55,7 @@ export default function Page() {
             <div>
               <div className="mb-4 flex flex-wrap items-center gap-2">
                 <Badge variant="success">Works without an account</Badge>
-                <Badge variant="warn">Google sign-in coming soon</Badge>
+                <Badge variant="info">Google sign-in available</Badge>
               </div>
               <h1 className="text-balance text-4xl font-semibold tracking-tight md:text-5xl">
                 Plan semesters with prerequisite checks built in.
@@ -67,11 +67,11 @@ export default function Page() {
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <ButtonLink
-                  href="/planner"
+                  href="/workspaces"
                   size="lg"
                   className="justify-center"
                 >
-                  Open planner
+                  Open workspaces
                   <ArrowRight className="h-5 w-5" />
                 </ButtonLink>
                 <ButtonLink
@@ -173,16 +173,16 @@ export default function Page() {
               <div>
                 <h3 className="text-base font-semibold">Ready to try it?</h3>
                 <p className="mt-1 text-sm text-zinc-600">
-                  Open the planner now. Google sign-in will be wired up later.
+                  Open the planner now. Sign in with Google to attach your identity.
                 </p>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
                 <ButtonLink
-                  href="/planner"
+                    href="/workspaces"
                   variant="secondary"
                   className="justify-center"
                 >
-                  Open planner
+                    Open workspaces
                   <ArrowRight className="h-5 w-5" />
                 </ButtonLink>
                 <ButtonLink href="/login" className="justify-center">

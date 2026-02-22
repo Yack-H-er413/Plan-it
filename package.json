@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "next": "15.1.6",
+    "next-auth": "beta",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "motion": "^12.34.3",

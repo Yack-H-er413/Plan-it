@@ -18,6 +18,14 @@ import {
   type PlannerState,
 } from "@/components/share/plannerShare";
 import { springs } from "@/components/motion/tokens";
+import {
+  clearWorkspaceState,
+  ensureWorkspaceExists,
+  getWorkspace,
+  getWorkspaceStateUrl,
+  setWorkspaceStateUrl,
+  type WorkspaceMeta,
+} from "@/components/workspaces/workspacesStorage";
 
 function sumCredits(courses: Course[]): number {
   return courses.reduce((acc, c) => {
@@ -40,8 +48,6 @@ function normalizeTerms(input: Term[]): Term[] {
   return input.map((t) => ({ ...t, completed: !!t.completed }));
 }
 
-const STORAGE_KEY = "planit_state_v1";
-
 function makeId(prefix: string) {
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
     return `${prefix}-${crypto.randomUUID()}`;
@@ -49,10 +55,13 @@ function makeId(prefix: string) {
   return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
-export function AppShell() {
+export function AppShell({ workspaceId }: { workspaceId: string }) {
   const [courses, setCourses] = React.useState<Course[]>([]);
   const [terms, setTerms] = React.useState<Term[]>([]);
   const [shareOpen, setShareOpen] = React.useState(false);
+
+  const [workspace, setWorkspace] = React.useState<WorkspaceMeta | null>(null);
+  const [hydrated, setHydrated] = React.useState(false);
 
   const [resetConfirmOpen, setResetConfirmOpen] = React.useState(false);
   const [deleteTermTarget, setDeleteTermTarget] = React.useState<
@@ -76,38 +85,54 @@ export function AppShell() {
 
   // Initial load: URL state wins; else localStorage; else blank.
   React.useEffect(() => {
+    setHydrated(false);
+    const meta = ensureWorkspaceExists(workspaceId);
+    setWorkspace(meta);
+
     const fromUrl = decodePlannerStateFromUrl(window.location.href);
     if (fromUrl) {
       setCourses(fromUrl.courseLibrary);
       setTerms(normalizeTerms(fromUrl.terms));
+      setHydrated(true);
       return;
     }
 
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
+    const raw = getWorkspaceStateUrl(workspaceId);
+    if (!raw) {
+      setHydrated(true);
+      return;
+    }
 
     const restored = decodePlannerStateFromUrl(raw);
     if (restored) {
       setCourses(restored.courseLibrary);
       setTerms(normalizeTerms(restored.terms));
     }
-  }, []);
+    setHydrated(true);
+  }, [workspaceId]);
 
   // Autosave (as a self-contained importable URL string).
   React.useEffect(() => {
+    if (!hydrated) return;
     try {
       const url = encodePlannerStateToUrl(plannerState, { absolute: false });
-      localStorage.setItem(STORAGE_KEY, url);
+      setWorkspaceStateUrl(workspaceId, url);
     } catch {
       // ignore storage errors
     }
-  }, [plannerState]);
+  }, [plannerState, workspaceId, hydrated]);
+
+  // Keep workspace metadata fresh (e.g. after rename in another tab).
+  React.useEffect(() => {
+    const meta = getWorkspace(workspaceId);
+    if (meta) setWorkspace(meta);
+  }, [workspaceId]);
 
   const resetToBlank = React.useCallback(() => {
     setCourses([]);
     setTerms([]);
     try {
-      localStorage.removeItem(STORAGE_KEY);
+      clearWorkspaceState(workspaceId);
     } catch {
       // ignore
     }
@@ -119,7 +144,7 @@ export function AppShell() {
     } catch {
       // ignore
     }
-  }, []);
+  }, [workspaceId]);
 
   const requestReset = React.useCallback(() => {
     setResetConfirmOpen(true);
@@ -287,10 +312,11 @@ export function AppShell() {
     setCourses(restored.courseLibrary);
     setTerms(normalizeTerms(restored.terms));
 
-    // Update the current URL so refresh keeps the imported state.
+    // Keep the user on the current workspace route (workspaces autosave anyway).
     try {
-      const absoluteUrl = encodePlannerStateToUrl(restored, { absolute: true });
-      window.history.replaceState({}, "", absoluteUrl);
+      const url = new URL(window.location.href);
+      url.searchParams.delete("s");
+      window.history.replaceState({}, "", url.toString());
     } catch {
       // ignore
     }
@@ -307,6 +333,7 @@ export function AppShell() {
       <TopNav
         onOpenShare={() => setShareOpen(true)}
         onReset={requestReset}
+        workspace={workspace ? { id: workspace.id, name: workspace.name, provider: workspace.provider } : undefined}
         credits={{
           total: sumTermCredits(terms),
           completed: sumTermCredits(terms, { completedOnly: true }),
@@ -354,7 +381,7 @@ export function AppShell() {
         open={resetConfirmOpen}
         onClose={() => setResetConfirmOpen(false)}
         title="Reset everything?"
-        description="This clears your course library, all terms, and any saved state in this browser. You can’t undo this unless you previously copied a share link."
+        description="This clears your course library, all terms, and the saved state for this workspace in this browser. You can’t undo this unless you previously copied a share link."
         confirmLabel="Reset"
         confirmVariant="danger"
         onConfirm={() => {
