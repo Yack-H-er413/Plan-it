@@ -106,13 +106,14 @@ export function AuthScreen({ mode }: { mode: Mode }) {
           </CardHeader>
           <CardContent>
             <div className="grid gap-4">
-              <button
+              <Button
                 type="button"
-                className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-5 text-base font-medium text-zinc-900 shadow-soft transition hover:bg-zinc-50 active:scale-[0.99]"
+                variant="secondary"
+                className="h-11 w-full justify-center text-base"
               >
                 <GoogleIcon className="h-5 w-5" />
                 Continue with Google
-              </button>
+              </Button>
 
               {isLogin ? (
                 <Button

@@ -6,6 +6,16 @@
   color-scheme: light;
 }
 
+/*
+  Dark mode
+  We use a simple, robust "invert" strategy so every existing surface and
+  component automatically flips without needing to rewrite every class.
+*/
+html.dark {
+  color-scheme: dark;
+  filter: invert(1) hue-rotate(180deg);
+}
+
 html, body {
   height: 100%;
 }

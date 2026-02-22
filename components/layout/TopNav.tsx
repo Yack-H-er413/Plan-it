@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { CalendarDays, Share2, RotateCcw, Settings2 } from "lucide-react";
 import { springs } from "@/components/motion/tokens";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { useRouter } from "next/navigation";
 
 export function TopNav({
   onOpenShare,
@@ -15,6 +17,7 @@ export function TopNav({
   onReset: () => void;
   credits?: { total: number; completed: number; goal: number };
 }) {
+  const router = useRouter();
   const goal = credits?.goal ?? 120;
   const total = Math.max(0, Math.round((credits?.total ?? 0) * 100) / 100);
   const completed = Math.max(0, Math.round((credits?.completed ?? 0) * 100) / 100);
@@ -29,9 +32,15 @@ export function TopNav({
     >
       <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between gap-3 px-4 py-3">
         <div className="flex items-center gap-3">
-          <div className="grid h-10 w-10 place-items-center rounded-2xl bg-zinc-900 text-white shadow-soft">
+          <Button
+            size="icon"
+            variant="default"
+            onClick={() => router.push("/")}
+            aria-label="Go to home"
+            title="Home"
+          >
             <CalendarDays className="h-5 w-5" />
-          </div>
+          </Button>
           <div className="leading-tight">
             <div className="flex items-center gap-2">
               <h1 className="text-sm font-semibold">Plan-it</h1>
@@ -71,6 +80,7 @@ export function TopNav({
             <RotateCcw className="h-4 w-4" />
             Reset
           </Button>
+          <ThemeToggle size="sm" />
           <Button variant="ghost" size="icon" aria-label="Settings">
             <Settings2 className="h-4 w-4" />
           </Button>

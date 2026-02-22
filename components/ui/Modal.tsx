@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { cn } from "./cn";
 import { springs, tweens } from "@/components/motion/tokens";
 
@@ -15,6 +15,7 @@ type ModalProps = {
 };
 
 export function Modal({ open, onClose, title, description, children, footer }: ModalProps) {
+  const reduceMotion = useReducedMotion();
   return (
     <AnimatePresence>
       {open ? (
@@ -65,8 +66,8 @@ export function Modal({ open, onClose, title, description, children, footer }: M
                     "hover:bg-white/60",
                     "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/40"
                   )}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.96 }}
+                  whileHover={reduceMotion ? undefined : { scale: 1.03 }}
+                  whileTap={reduceMotion ? undefined : { scale: 0.96 }}
                   transition={springs.ui}
                   aria-label="Close"
                 >
