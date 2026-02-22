@@ -104,14 +104,14 @@ export function AddCourseDialog({
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label>Course code</Label>
-            <Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="e.g., CS 101" />
+            <Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="e.g., DEPT 101" />
           </div>
           <div className="space-y-1.5">
             <Label>Title</Label>
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g., Introduction to Programming"
+              placeholder="e.g., Foundations"
             />
           </div>
 
@@ -167,7 +167,7 @@ export function AddCourseDialog({
             <Input
               value={prereqs}
               onChange={(e) => setPrereqs(e.target.value)}
-              placeholder="e.g., CS 100, MATH 101"
+              placeholder="e.g., DEPT 100, DEPT 110"
             />
             <p className="text-[11px] text-zinc-500">
               This stays flexible for any school — just type the course codes you want.

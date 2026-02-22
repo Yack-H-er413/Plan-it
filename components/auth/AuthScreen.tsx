@@ -24,7 +24,6 @@ export function AuthScreen({ mode }: { mode: Mode }) {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold">Plan-it</span>
-                <Badge variant="info">UI prototype</Badge>
               </div>
               <p className="text-xs text-zinc-600">Course mapping & prereq planning</p>
             </div>
@@ -43,18 +42,18 @@ export function AuthScreen({ mode }: { mode: Mode }) {
             <div className="flex items-start gap-3 rounded-2xl border border-zinc-200 bg-white/70 p-4 shadow-soft">
               <LockKeyhole className="mt-0.5 h-5 w-5 text-zinc-700" />
               <div>
-                <p className="text-sm font-medium">Google-only authentication</p>
+                <p className="text-sm font-medium">Secure sign-in with Google</p>
                 <p className="mt-0.5 text-sm text-zinc-600">
-                  No passwords or email sign-in fields in this prototype.
+                  Use your Google account for fast, passwordless access.
                 </p>
               </div>
             </div>
             <div className="flex items-start gap-3 rounded-2xl border border-zinc-200 bg-white/70 p-4 shadow-soft">
               <CheckCircle2 className="mt-0.5 h-5 w-5 text-zinc-700" />
               <div>
-                <p className="text-sm font-medium">Design-only screens</p>
+                <p className="text-sm font-medium">Shareable planning workspace</p>
                 <p className="mt-0.5 text-sm text-zinc-600">
-                  Buttons are present for layout and polish; no auth logic is wired yet.
+                  Save your plan, share a link, and import plans from teammates or advisors.
                 </p>
               </div>
             </div>
@@ -65,7 +64,7 @@ export function AuthScreen({ mode }: { mode: Mode }) {
               Back to landing
             </ButtonLink>
             <ButtonLink href="/planner" variant="secondary" size="sm">
-              Open demo workspace
+              Open planner
               <ArrowRight className="h-4 w-4" />
             </ButtonLink>
           </div>
@@ -92,14 +91,6 @@ export function AuthScreen({ mode }: { mode: Mode }) {
                 <GoogleIcon className="h-5 w-5" />
                 Continue with Google
               </button>
-
-              <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 text-xs text-zinc-600">
-                <p className="font-medium text-zinc-800">Note</p>
-                <p className="mt-1">
-                  This is a UI-only build. When auth is added, this button would trigger a
-                  Google OAuth flow and then redirect to <span className="font-medium">/planner</span>.
-                </p>
-              </div>
 
               <div className="flex items-center justify-between gap-3 text-sm">
                 <p className="text-zinc-600">

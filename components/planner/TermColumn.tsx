@@ -1,12 +1,14 @@
 "use client";
 
 import * as React from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { CourseChip } from "@/components/planner/CourseChip";
 import type { Course, Term } from "@/components/types";
 import { Plus } from "lucide-react";
 import { AddNextCoursePopover } from "@/components/modals/AddNextCoursePopover";
+import { springs } from "@/components/motion/tokens";
 
 export function TermColumn({
   term,
@@ -50,15 +52,23 @@ export function TermColumn({
       </div>
 
       <div className="mt-3 space-y-3 rounded-3xl border border-zinc-200 bg-white p-3 shadow-soft">
-        {term.courses.map((c) => (
-          <CourseChip key={c.code} course={c} onRemove={() => onRemoveCourse(c.code)} />
-        ))}
+        <AnimatePresence mode="popLayout">
+          {term.courses.map((c) => (
+            <CourseChip key={c.code} course={c} onRemove={() => onRemoveCourse(c.code)} />
+          ))}
+        </AnimatePresence>
 
-        <div className="rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 p-3">
+        <motion.div
+          layout
+          className="rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 p-3"
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={springs.soft}
+        >
           <p className="text-xs text-zinc-600">
             Use the (+) button to add courses from your library into this term.
           </p>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -5,7 +5,6 @@ type Props = React.SVGProps<SVGSVGElement>;
 
 /**
  * Minimal Google "G" mark for auth buttons.
- * (Design-only; does not imply any affiliation.)
  */
 export function GoogleIcon({ className, ...props }: Props) {
   return (

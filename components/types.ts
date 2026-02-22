@@ -12,4 +12,6 @@ export type Term = {
   id: string;
   label: string; // e.g., "Fall 2026"
   courses: Course[];
+  /** If true, this term's credits count as "earned" (previously taken). */
+  completed?: boolean;
 };

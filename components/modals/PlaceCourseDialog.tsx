@@ -97,8 +97,8 @@ export function PlaceCourseDialog({
         <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-3">
           <div className="text-sm font-semibold">Term selection</div>
           <p className="mt-1 text-sm text-zinc-600">
-            If you pick a term that is too early, you&apos;ll get a prereq error. (Example: don&apos;t take CICS 210
-            in the same term as CICS 160.)
+            If you pick a term that is too early, you&apos;ll see a prerequisite conflict. For best results,
+            place advanced courses after their required prerequisites.
           </p>
         </div>
 

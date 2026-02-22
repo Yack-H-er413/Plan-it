@@ -26,7 +26,6 @@ export default function Page() {
             <div className="leading-tight">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold">Plan-it</span>
-                <Badge variant="info">UI prototype</Badge>
               </div>
               <p className="text-xs text-zinc-600">Course mapping & prereq planning</p>
             </div>
@@ -34,7 +33,7 @@ export default function Page() {
 
           <nav className="flex items-center gap-2">
             <ButtonLink variant="ghost" size="sm" href="/planner">
-              Open demo
+              Open planner
               <ArrowRight className="h-4 w-4" />
             </ButtonLink>
             <ButtonLink variant="secondary" size="sm" href="/login">
@@ -74,7 +73,7 @@ export default function Page() {
                   size="lg"
                   className="justify-center"
                 >
-                  View demo workspace
+                  Open planner
                   <ArrowRight className="h-5 w-5" />
                 </ButtonLink>
               </div>
@@ -87,7 +86,7 @@ export default function Page() {
                   Clean export/share UI
                 </span>
                 <span className="rounded-full border border-zinc-200 bg-white/70 px-3 py-1 shadow-soft">
-                  Built for fast demos
+                  Shareable plans
                 </span>
               </div>
             </div>
@@ -113,7 +112,7 @@ export default function Page() {
                   <div className="h-44 rounded-2xl border border-zinc-200 bg-white" />
                 </div>
                 <p className="mt-4 text-xs text-zinc-600">
-                  Design-only: graph canvas & inspector live under <span className="font-medium">/planner</span>.
+                  Open the planner workspace to build, validate, and share your plan.
                 </p>
               </div>
             </Card>
@@ -163,7 +162,7 @@ export default function Page() {
               <div>
                 <h3 className="text-base font-semibold">Ready to try it?</h3>
                 <p className="mt-1 text-sm text-zinc-600">
-                  Start with Google sign-in, then jump into the demo workspace.
+                  Sign in with Google, then open your planning workspace.
                 </p>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
@@ -182,11 +181,11 @@ export default function Page() {
 
         <footer className="mx-auto w-full max-w-6xl px-4 pb-10">
           <div className="flex flex-col items-start justify-between gap-3 border-t border-zinc-200 pt-6 sm:flex-row sm:items-center">
-            <p className="text-xs text-zinc-600">© {new Date().getFullYear()} Plan-it — design-only frontend.</p>
+            <p className="text-xs text-zinc-600">© {new Date().getFullYear()} Plan-it</p>
             <div className="flex items-center gap-2 text-xs text-zinc-600">
               <span className="rounded-full border border-zinc-200 bg-white/70 px-3 py-1">Next.js</span>
               <span className="rounded-full border border-zinc-200 bg-white/70 px-3 py-1">Tailwind</span>
-              <span className="rounded-full border border-zinc-200 bg-white/70 px-3 py-1">Google auth (placeholder)</span>
+              <span className="rounded-full border border-zinc-200 bg-white/70 px-3 py-1">Google sign-in</span>
             </div>
           </div>
         </footer>

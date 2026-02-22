@@ -1,11 +1,17 @@
 "use client";
 
+import * as React from "react";
+import { motion } from "motion/react";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { GripVertical, ArrowRight, X } from "lucide-react";
 import type { Course } from "@/components/types";
+import { springs } from "@/components/motion/tokens";
 
-export function CourseChip({ course, onRemove }: { course: Course; onRemove?: () => void }) {
+export const CourseChip = React.forwardRef<
+  HTMLDivElement,
+  { course: Course; onRemove?: () => void }
+>(function CourseChip({ course, onRemove }, ref) {
   const credits = (() => {
     if (typeof course.credits === "number" && !Number.isNaN(course.credits) && course.credits > 0) return course.credits;
     const m = (course.notes ?? "").match(/(\d+(?:\.\d+)?)\s*credits?/i);
@@ -14,7 +20,15 @@ export function CourseChip({ course, onRemove }: { course: Course; onRemove?: ()
   })();
 
   return (
-    <Card className="p-3">
+    <motion.div
+      ref={ref}
+      layout
+      initial={{ opacity: 0, y: 10, scale: 0.985 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 10, scale: 0.985 }}
+      transition={springs.soft}
+    >
+      <Card className="p-3">
       <div className="flex items-start gap-2">
         <div className="mt-0.5 text-zinc-400">
           <GripVertical className="h-4 w-4" />
@@ -26,14 +40,17 @@ export function CourseChip({ course, onRemove }: { course: Course; onRemove?: ()
               <Badge variant="neutral">{course.semesters} sem</Badge>
               {credits != null ? <Badge variant="neutral">{credits} cr</Badge> : null}
               {onRemove ? (
-                <button
+                <motion.button
                   type="button"
                   onClick={onRemove}
                   className="grid h-8 w-8 place-items-center rounded-xl text-zinc-600 hover:bg-zinc-100"
                   aria-label={`Remove ${course.code}`}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.94 }}
+                  transition={springs.ui}
                 >
                   <X className="h-4 w-4" />
-                </button>
+                </motion.button>
               ) : null}
             </div>
           </div>
@@ -54,6 +71,9 @@ export function CourseChip({ course, onRemove }: { course: Course; onRemove?: ()
           </div>
         </div>
       </div>
-    </Card>
+      </Card>
+    </motion.div>
   );
-}
+});
+
+CourseChip.displayName = "CourseChip";

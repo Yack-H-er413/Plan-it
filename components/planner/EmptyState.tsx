@@ -28,7 +28,7 @@ export function EmptyState({
             </Button>
             <Button variant="secondary" onClick={onOpenShare}>
               <Share2 className="h-4 w-4" />
-              Import a schedule
+              Import a plan
             </Button>
           </div>
         </div>

@@ -1,12 +1,14 @@
 "use client";
 
 import * as React from "react";
+import { AnimatePresence, motion } from "motion/react";
 import type { Course, Term } from "@/components/types";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { CourseChip } from "@/components/planner/CourseChip";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, CheckCircle2 } from "lucide-react";
+import { springs } from "@/components/motion/tokens";
 
 function sumCredits(courses: Course[]): number {
   return courses.reduce((acc, c) => {
@@ -22,13 +24,15 @@ export function DropPlanArea({
   onCourseDropped,
   onAddTerm,
   onRemoveCourseFromTerm,
-  onClearTerm,
+  onDeleteTerm,
+  onToggleTermCompleted,
 }: {
   terms: Term[];
   onCourseDropped: (courseCode: string) => void;
   onAddTerm: (label: string) => void;
   onRemoveCourseFromTerm: (termId: string, courseCode: string) => void;
-  onClearTerm: (termId: string) => void;
+  onDeleteTerm: (termId: string) => void;
+  onToggleTermCompleted: (termId: string) => void;
 }) {
   const [newTermLabel, setNewTermLabel] = React.useState("");
 
@@ -83,7 +87,12 @@ export function DropPlanArea({
       >
         {terms.length === 0 ? (
           <div className="grid h-full place-items-center">
-            <div className="max-w-lg rounded-3xl border border-dashed border-zinc-300 bg-white p-6 text-center shadow-soft">
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.99 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={springs.soft}
+              className="max-w-lg rounded-3xl border border-dashed border-zinc-300 bg-white p-6 text-center shadow-soft"
+            >
               <div className="text-sm font-semibold">Drop courses here</div>
               <p className="mt-2 text-sm text-zinc-600">
                 Start by dragging a course from the Course Library (left). After you drop it, you&apos;ll be
@@ -94,57 +103,100 @@ export function DropPlanArea({
                 <Badge variant="neutral">No same-term prereqs</Badge>
                 <Badge variant="neutral">Credits shown</Badge>
               </div>
-            </div>
+            </motion.div>
           </div>
         ) : (
-          <div className="grid gap-4 lg:grid-cols-2">
-            {terms.map((t) => (
-              <Card key={t.id} className="rounded-3xl bg-white p-4 shadow-soft">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="truncate text-sm font-semibold">{t.label}</div>
-                    <div className="mt-1 flex flex-wrap items-center gap-2">
-                      <Badge variant="neutral">
-                        {t.courses.length} course{t.courses.length === 1 ? "" : "s"}
-                      </Badge>
-                      <Badge variant="neutral">{sumCredits(t.courses)} cr</Badge>
+          <motion.div layout className="grid gap-4 lg:grid-cols-2">
+            <AnimatePresence mode="popLayout">
+              {terms.map((t) => (
+                <motion.div
+                  key={t.id}
+                  layout
+                  initial={{ opacity: 0, y: 10, scale: 0.99 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.99 }}
+                  transition={springs.soft}
+                >
+                  <Card className="rounded-3xl bg-white p-4 shadow-soft">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="truncate text-sm font-semibold">{t.label}</div>
+                        <div className="mt-1 flex flex-wrap items-center gap-2">
+                          <Badge variant="neutral">
+                            {t.courses.length} course{t.courses.length === 1 ? "" : "s"}
+                          </Badge>
+                          <Badge variant="neutral">{sumCredits(t.courses)} cr</Badge>
+                          <button
+                            type="button"
+                            onClick={() => onToggleTermCompleted(t.id)}
+                            className={
+                              "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs " +
+                              (t.completed
+                                ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                                : "border-zinc-200 bg-white text-zinc-600")
+                            }
+                            aria-pressed={!!t.completed}
+                          >
+                            <CheckCircle2 className="h-3.5 w-3.5" />
+                            {t.completed ? "Completed" : "Planned"}
+                          </button>
+                        </div>
+                      </div>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        aria-label={`Delete ${t.label}`}
+                        onClick={() => onDeleteTerm(t.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
-                  </div>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    aria-label={`Clear ${t.label}`}
-                    onClick={() => onClearTerm(t.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
 
-                <div className="mt-3 space-y-3">
-                  {t.courses.length === 0 ? (
-                    <div className="rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 p-3 text-xs text-zinc-600">
-                      No courses in this term yet.
+                    <div className="mt-3 space-y-3">
+                      <AnimatePresence mode="popLayout">
+                        {t.courses.length === 0 ? (
+                          <motion.div
+                            key="empty"
+                            initial={{ opacity: 0, y: 6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 6 }}
+                            transition={springs.soft}
+                            className="rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 p-3 text-xs text-zinc-600"
+                          >
+                            No courses in this term yet.
+                          </motion.div>
+                        ) : null}
+                        {t.courses.map((c) => (
+                          <CourseChip
+                            key={c.code}
+                            course={c}
+                            onRemove={() => onRemoveCourseFromTerm(t.id, c.code)}
+                          />
+                        ))}
+                      </AnimatePresence>
                     </div>
-                  ) : null}
-                  {t.courses.map((c) => (
-                    <CourseChip
-                      key={c.code}
-                      course={c}
-                      onRemove={() => onRemoveCourseFromTerm(t.id, c.code)}
-                    />
-                  ))}
-                </div>
-              </Card>
-            ))}
+                  </Card>
+                </motion.div>
+              ))}
 
-            <Card className="rounded-3xl border-dashed bg-white p-4 shadow-soft">
-              <div className="text-sm font-semibold">Tip</div>
-              <p className="mt-1 text-sm text-zinc-600">
-                Drop a course anywhere on this right panel. You&apos;ll pick a term in a popup. If prereqs
-                aren&apos;t satisfied in earlier terms, the app will block it.
-              </p>
-            </Card>
-          </div>
+              <motion.div
+                key="tip"
+                layout
+                initial={{ opacity: 0, y: 10, scale: 0.99 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.99 }}
+                transition={springs.soft}
+              >
+                <Card className="rounded-3xl border-dashed bg-white p-4 shadow-soft">
+                  <div className="text-sm font-semibold">Tip</div>
+                  <p className="mt-1 text-sm text-zinc-600">
+                    Drop a course anywhere on this right panel. You&apos;ll pick a term in a popup. If prereqs
+                    aren&apos;t satisfied in earlier terms, the app will block it.
+                  </p>
+                </Card>
+              </motion.div>
+            </AnimatePresence>
+          </motion.div>
         )}
       </div>
     </section>

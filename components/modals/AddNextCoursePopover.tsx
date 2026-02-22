@@ -1,11 +1,13 @@
 "use client";
 
 import * as React from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import type { Course } from "@/components/types";
 import { Plus, Search } from "lucide-react";
+import { springs } from "@/components/motion/tokens";
 
 export function AddNextCoursePopover({
   open,
@@ -20,8 +22,6 @@ export function AddNextCoursePopover({
   existingCodes: string[];
   onAdd: (courseCode: string) => void;
 }) {
-  if (!open) return null;
-
   const [q, setQ] = React.useState("");
 
   const options = React.useMemo(() => {
@@ -35,13 +35,26 @@ export function AddNextCoursePopover({
   }, [courseLibrary, existingCodes, q]);
 
   return (
-    <div className="absolute right-0 top-12 z-30 w-[280px]">
-      <Card className="p-3">
+    <AnimatePresence>
+      {open ? (
+        <motion.div
+          className="absolute right-0 top-12 z-30 w-[280px]"
+          initial={{ opacity: 0, y: 10, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 10, scale: 0.98 }}
+          transition={springs.pop}
+        >
+        <Card className="p-3 border-white/40 bg-white/70 supports-[backdrop-filter]:bg-white/55 backdrop-blur-xl">
         <div className="flex items-center justify-between gap-2">
           <div className="text-sm font-semibold">Add course</div>
-          <button className="rounded-xl px-2 py-1 text-xs text-zinc-600 hover:bg-zinc-100" onClick={onClose}>
+          <motion.button
+            className="rounded-xl px-2 py-1 text-xs text-zinc-600 hover:bg-zinc-100"
+            onClick={onClose}
+            whileTap={{ scale: 0.98 }}
+            transition={springs.ui}
+          >
             Close
-          </button>
+          </motion.button>
         </div>
 
         <div className="mt-3">
@@ -83,8 +96,10 @@ export function AddNextCoursePopover({
             <span>Share this whole schedule via the top “Share / Import” button.</span>
           </div>
         </div>
-      </Card>
-    </div>
+        </Card>
+        </motion.div>
+      ) : null}
+    </AnimatePresence>
   );
 }
 
@@ -98,7 +113,12 @@ function OptionRow({
   onAdd: () => void;
 }) {
   return (
-    <div className="flex items-center justify-between gap-2 rounded-2xl border border-zinc-200 p-2 hover:bg-zinc-50">
+    <motion.div
+      className="flex items-center justify-between gap-2 rounded-2xl border border-zinc-200 p-2 hover:bg-zinc-50"
+      whileHover={{ y: -0.5 }}
+      whileTap={{ scale: 0.99 }}
+      transition={springs.ui}
+    >
       <div className="min-w-0">
         <div className="truncate text-sm font-semibold">{label}</div>
         <div className="truncate text-xs text-zinc-600">{subtitle}</div>
@@ -106,6 +126,6 @@ function OptionRow({
       <Button size="icon" variant="secondary" aria-label={`Add ${label}`} onClick={onAdd}>
         <Plus className="h-4 w-4" />
       </Button>
-    </div>
+    </motion.div>
   );
 }

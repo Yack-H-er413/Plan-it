@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
+import { ConfirmDialog } from "@/components/modals/ConfirmDialog";
 import type { PlannerState } from "@/components/share/plannerShare";
 import { encodePlannerStateToUrl } from "@/components/share/plannerShare";
 import template from "@/templates/umass-cs-demo.json";
@@ -23,6 +24,13 @@ export function ShareImportDialog({ open, onClose, state, onImport, onReset }: P
   const [importValue, setImportValue] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const [copied, setCopied] = React.useState<string | null>(null);
+  const [overwriteConfirm, setOverwriteConfirm] = React.useState<
+    | {
+        value: string;
+        label: string;
+      }
+    | null
+  >(null);
 
   React.useEffect(() => {
     if (!open) return;
@@ -56,7 +64,16 @@ export function ShareImportDialog({ open, onClose, state, onImport, onReset }: P
 
   function handleImport(value: string) {
     setError(null);
-    const ok = onImport(value);
+    const trimmed = value.trim();
+    if (!trimmed) return;
+
+    const hasExisting = state.courseLibrary.length > 0 || state.terms.length > 0;
+    if (hasExisting) {
+      setOverwriteConfirm({ value: trimmed, label: "Import" });
+      return;
+    }
+
+    const ok = onImport(trimmed);
     if (!ok) {
       setError("That link doesn't look like a valid Plan-it share URL.");
       return;
@@ -66,7 +83,8 @@ export function ShareImportDialog({ open, onClose, state, onImport, onReset }: P
   }
 
   return (
-    <Modal
+    <>
+      <Modal
       open={open}
       onClose={onClose}
       title="Share / Import"
@@ -153,11 +171,45 @@ export function ShareImportDialog({ open, onClose, state, onImport, onReset }: P
               <Button variant="secondary" onClick={() => copyToClipboard(demoUrl, "demo")}>
                 Copy
               </Button>
-              <Button onClick={() => handleImport(demoUrl)}>Load</Button>
+              <Button
+                onClick={() => {
+                  const hasExisting = state.courseLibrary.length > 0 || state.terms.length > 0;
+                  if (hasExisting) {
+                    setOverwriteConfirm({ value: demoUrl, label: "Load demo" });
+                    return;
+                  }
+                  handleImport(demoUrl);
+                }}
+              >
+                Load
+              </Button>
             </div>
           </div>
         </Card>
       </div>
     </Modal>
+
+      <ConfirmDialog
+        open={!!overwriteConfirm}
+        onClose={() => setOverwriteConfirm(null)}
+        title="Replace your current plan?"
+        description={`This will overwrite your current plan (${state.courseLibrary.length} course${
+          state.courseLibrary.length === 1 ? "" : "s"
+        }, ${state.terms.length} term${state.terms.length === 1 ? "" : "s"}). You can’t undo this unless you copied a share link.`}
+        confirmLabel={overwriteConfirm?.label ?? "Replace"}
+        confirmVariant="danger"
+        onConfirm={() => {
+          if (!overwriteConfirm) return;
+          const ok = onImport(overwriteConfirm.value);
+          if (!ok) {
+            setError("That link doesn't look like a valid Plan-it share URL.");
+            return;
+          }
+          setImportValue("");
+          setOverwriteConfirm(null);
+          onClose();
+        }}
+      />
+    </>
   );
 }

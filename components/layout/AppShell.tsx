@@ -1,10 +1,12 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "motion/react";
 import { TopNav } from "@/components/layout/TopNav";
 import { Sidebar } from "@/components/layout/Sidebar";
 import type { Course, Term } from "@/components/types";
 import { ShareImportDialog } from "@/components/modals/ShareImportDialog";
+import { ConfirmDialog } from "@/components/modals/ConfirmDialog";
 import { DropPlanArea } from "@/components/planner/DropPlanArea";
 import {
   PlaceCourseDialog,
@@ -15,15 +17,34 @@ import {
   encodePlannerStateToUrl,
   type PlannerState,
 } from "@/components/share/plannerShare";
+import { springs } from "@/components/motion/tokens";
+
+function sumCredits(courses: Course[]): number {
+  return courses.reduce((acc, c) => {
+    if (typeof c.credits === "number" && !Number.isNaN(c.credits)) return acc + c.credits;
+    const m = (c.notes ?? "").match(/(\d+(?:\.\d+)?)\s*credits?/i);
+    if (m) return acc + Number(m[1]);
+    return acc;
+  }, 0);
+}
+
+function sumTermCredits(terms: Term[], opts: { completedOnly?: boolean } = {}): number {
+  const { completedOnly } = opts;
+  return terms.reduce((acc, t) => {
+    if (completedOnly && !t.completed) return acc;
+    return acc + sumCredits(t.courses);
+  }, 0);
+}
+
+function normalizeTerms(input: Term[]): Term[] {
+  return input.map((t) => ({ ...t, completed: !!t.completed }));
+}
 
 const STORAGE_KEY = "planit_state_v1";
 
 function makeId(prefix: string) {
-  // crypto.randomUUID is widely supported in modern browsers.
-  // Fall back to a time-based id if unavailable.
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return `${prefix}-${(crypto as any).randomUUID()}`;
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return `${prefix}-${crypto.randomUUID()}`;
   }
   return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
@@ -32,6 +53,16 @@ export function AppShell() {
   const [courses, setCourses] = React.useState<Course[]>([]);
   const [terms, setTerms] = React.useState<Term[]>([]);
   const [shareOpen, setShareOpen] = React.useState(false);
+
+  const [resetConfirmOpen, setResetConfirmOpen] = React.useState(false);
+  const [deleteTermTarget, setDeleteTermTarget] = React.useState<
+    | {
+        id: string;
+        label: string;
+        courseCount: number;
+      }
+    | null
+  >(null);
 
   // Drag/drop placement modal state
   const [placeOpen, setPlaceOpen] = React.useState(false);
@@ -48,7 +79,7 @@ export function AppShell() {
     const fromUrl = decodePlannerStateFromUrl(window.location.href);
     if (fromUrl) {
       setCourses(fromUrl.courseLibrary);
-      setTerms(fromUrl.terms);
+      setTerms(normalizeTerms(fromUrl.terms));
       return;
     }
 
@@ -58,7 +89,7 @@ export function AppShell() {
     const restored = decodePlannerStateFromUrl(raw);
     if (restored) {
       setCourses(restored.courseLibrary);
-      setTerms(restored.terms);
+      setTerms(normalizeTerms(restored.terms));
     }
   }, []);
 
@@ -90,6 +121,10 @@ export function AppShell() {
     }
   }, []);
 
+  const requestReset = React.useCallback(() => {
+    setResetConfirmOpen(true);
+  }, []);
+
   const addCourse = React.useCallback((course: Course) => {
     setCourses((prev) => {
       const normalized = course.code.trim().toLowerCase();
@@ -102,7 +137,11 @@ export function AppShell() {
   const addTerm = React.useCallback((label: string) => {
     const trimmed = label.trim();
     if (!trimmed) return;
-    setTerms((prev) => [...prev, { id: makeId("term"), label: trimmed, courses: [] }]);
+    setTerms((prev) => [...prev, { id: makeId("term"), label: trimmed, courses: [], completed: false }]);
+  }, []);
+
+  const toggleTermCompleted = React.useCallback((termId: string) => {
+    setTerms((prev) => prev.map((t) => (t.id === termId ? { ...t, completed: !t.completed } : t)));
   }, []);
 
   const removeCourseFromTerm = React.useCallback((termId: string, courseCode: string) => {
@@ -113,8 +152,18 @@ export function AppShell() {
     );
   }, []);
 
-  const clearTerm = React.useCallback((termId: string) => {
-    setTerms((prev) => prev.map((t) => (t.id === termId ? { ...t, courses: [] } : t)));
+  const requestDeleteTerm = React.useCallback(
+    (termId: string) => {
+      const t = terms.find((x) => x.id === termId);
+      if (!t) return;
+      setDeleteTermTarget({ id: t.id, label: t.label, courseCount: t.courses.length });
+    },
+    [terms]
+  );
+
+  const deleteTerm = React.useCallback((termId: string) => {
+    setTerms((prev) => prev.filter((t) => t.id !== termId));
+    setDeleteTermTarget(null);
   }, []);
 
   function validatePlacement(nextCourse: Course, targetTermId: string, snapshotTerms: Term[]) {
@@ -195,13 +244,13 @@ export function AppShell() {
           // New term is appended to the end of the plan.
           const id = makeId("term");
           // Validate against the term that will exist at the end.
-          const nextTermsSnapshot: Term[] = [...terms, { id, label, courses: [] }];
+          const nextTermsSnapshot: Term[] = [...terms, { id, label, courses: [], completed: false }];
           const v = validatePlacement(course, id, nextTermsSnapshot);
           if (!v.ok) {
             setPlaceError(v.message);
             return;
           }
-          setTerms((prev) => [...prev, { id, label, courses: [course] }]);
+          setTerms((prev) => [...prev, { id, label, courses: [course], completed: false }]);
           setPlaceOpen(false);
           setPendingCourseCode(null);
           return;
@@ -236,7 +285,7 @@ export function AppShell() {
     if (!restored) return false;
 
     setCourses(restored.courseLibrary);
-    setTerms(restored.terms);
+    setTerms(normalizeTerms(restored.terms));
 
     // Update the current URL so refresh keeps the imported state.
     try {
@@ -249,8 +298,21 @@ export function AppShell() {
   }, []);
 
   return (
-    <div className="min-h-screen">
-      <TopNav onOpenShare={() => setShareOpen(true)} onReset={resetToBlank} />
+    <motion.div
+      className="min-h-screen"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={springs.soft}
+    >
+      <TopNav
+        onOpenShare={() => setShareOpen(true)}
+        onReset={requestReset}
+        credits={{
+          total: sumTermCredits(terms),
+          completed: sumTermCredits(terms, { completedOnly: true }),
+          goal: 120,
+        }}
+      />
       <main className="mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-0 lg:grid-cols-[360px_1fr]">
         <div className="h-[calc(100vh-57px)]">
           <Sidebar courses={courses} onAddCourse={addCourse} onOpenShare={() => setShareOpen(true)} />
@@ -261,7 +323,8 @@ export function AppShell() {
             onCourseDropped={beginPlaceCourse}
             onAddTerm={addTerm}
             onRemoveCourseFromTerm={removeCourseFromTerm}
-            onClearTerm={clearTerm}
+            onDeleteTerm={requestDeleteTerm}
+            onToggleTermCompleted={toggleTermCompleted}
           />
         </div>
       </main>
@@ -271,7 +334,7 @@ export function AppShell() {
         onClose={() => setShareOpen(false)}
         state={plannerState}
         onImport={importFromUrl}
-        onReset={resetToBlank}
+        onReset={requestReset}
       />
 
       <PlaceCourseDialog
@@ -286,6 +349,43 @@ export function AppShell() {
         error={placeError}
         onConfirm={confirmPlaceCourse}
       />
-    </div>
+
+      <ConfirmDialog
+        open={resetConfirmOpen}
+        onClose={() => setResetConfirmOpen(false)}
+        title="Reset everything?"
+        description="This clears your course library, all terms, and any saved state in this browser. You can’t undo this unless you previously copied a share link."
+        confirmLabel="Reset"
+        confirmVariant="danger"
+        onConfirm={() => {
+          resetToBlank();
+          setShareOpen(false);
+          setPlaceOpen(false);
+          setPendingCourseCode(null);
+          setPlaceError(null);
+        }}
+      />
+
+      <ConfirmDialog
+        open={!!deleteTermTarget}
+        onClose={() => setDeleteTermTarget(null)}
+        title={deleteTermTarget ? `Delete "${deleteTermTarget.label}"?` : "Delete term?"}
+        description={
+          deleteTermTarget
+            ? deleteTermTarget.courseCount > 0
+              ? `This removes the term and unplaces ${deleteTermTarget.courseCount} course${
+                  deleteTermTarget.courseCount === 1 ? "" : "s"
+                }. Courses stay in your library.`
+              : "This removes the term."
+            : undefined
+        }
+        confirmLabel="Delete term"
+        confirmVariant="danger"
+        onConfirm={() => {
+          if (!deleteTermTarget) return;
+          deleteTerm(deleteTermTarget.id);
+        }}
+      />
+    </motion.div>
   );
 }

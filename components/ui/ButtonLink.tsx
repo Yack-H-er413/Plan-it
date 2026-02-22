@@ -14,7 +14,14 @@ export function ButtonLink({
   ...props
 }: Props) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none";
+    [
+      "inline-flex items-center justify-center gap-2 rounded-2xl font-medium",
+      "transition-[transform,background-color,border-color,box-shadow] duration-200 ease-ios",
+      "will-change-transform",
+      "hover:translate-y-[-0.5px] active:scale-[0.99]",
+      "disabled:opacity-50 disabled:pointer-events-none",
+      "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-zinc-200/70",
+    ].join(" ");
   const variants: Record<NonNullable<Props["variant"]>, string> = {
     default: "bg-zinc-900 text-white hover:bg-zinc-800 shadow-soft",
     secondary:
