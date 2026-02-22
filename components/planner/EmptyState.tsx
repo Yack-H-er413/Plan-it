@@ -1,8 +1,14 @@
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { Plus, Sparkles } from "lucide-react";
+import { Plus, Sparkles, Share2 } from "lucide-react";
 
-export function EmptyState() {
+export function EmptyState({
+  onAddTerm,
+  onOpenShare,
+}: {
+  onAddTerm: () => void;
+  onOpenShare: () => void;
+}) {
   return (
     <Card className="mx-auto max-w-xl p-6">
       <div className="flex items-start gap-3">
@@ -12,15 +18,18 @@ export function EmptyState() {
         <div className="min-w-0">
           <h3 className="text-sm font-semibold">Start your plan</h3>
           <p className="mt-1 text-sm text-zinc-600">
-            Add a course from the sidebar and drag it into a term column. If a term can’t be inferred,
-            you’ll be prompted to pick one.
+            New users start with a blank slate. Create a term column, add courses to your library, then
+            place them into terms.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
-            <Button>
+            <Button onClick={onAddTerm}>
               <Plus className="h-4 w-4" />
-              Add first course
+              Add your first term
             </Button>
-            <Button variant="secondary">Choose a template</Button>
+            <Button variant="secondary" onClick={onOpenShare}>
+              <Share2 className="h-4 w-4" />
+              Import a plan
+            </Button>
           </div>
         </div>
       </div>

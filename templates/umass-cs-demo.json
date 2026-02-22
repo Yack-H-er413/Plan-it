@@ -1,0 +1,585 @@
+{
+  "schemaVersion": 1,
+  "templateId": "umass-cs-demo-fall2025-ui-only",
+  "label": "UMass Amherst \u2014 B.S. Computer Science (UI-only template)",
+  "school": {
+    "schoolId": "umass",
+    "name": "University of Massachusetts Amherst"
+  },
+  "program": {
+    "programId": "bs-cs",
+    "name": "B.S. in Computer Science",
+    "catalogYear": "Fall 2025"
+  },
+  "uiOnly": {
+    "courseLibrary": [
+      {
+        "code": "CICS 110",
+        "title": "Foundations of Programming",
+        "semesters": 1,
+        "prereqs": [],
+        "notes": "4 credits",
+        "credits": 4
+      },
+      {
+        "code": "CICS 160",
+        "title": "Object-Oriented Programming",
+        "semesters": 1,
+        "prereqs": [
+          "CICS 110"
+        ],
+        "notes": "4 credits",
+        "credits": 4
+      },
+      {
+        "code": "CICS 210",
+        "title": "Data Structures",
+        "semesters": 1,
+        "prereqs": [
+          "CICS 160"
+        ],
+        "notes": "4 credits",
+        "credits": 4
+      },
+      {
+        "code": "COMPSCI 220",
+        "title": "Programming Methodology",
+        "semesters": 1,
+        "prereqs": [
+          "CICS 160"
+        ],
+        "notes": "4 credits",
+        "credits": 4
+      },
+      {
+        "code": "COMPSCI 230",
+        "title": "Systems Programming",
+        "semesters": 1,
+        "prereqs": [
+          "CICS 210"
+        ],
+        "notes": "4 credits",
+        "credits": 4
+      },
+      {
+        "code": "COMPSCI 240",
+        "title": "Reasoning Under Uncertainty",
+        "semesters": 1,
+        "prereqs": [
+          "CICS 210"
+        ],
+        "notes": "4 credits",
+        "credits": 4
+      },
+      {
+        "code": "COMPSCI 250",
+        "title": "Intro to Computation",
+        "semesters": 1,
+        "prereqs": [
+          "CICS 210"
+        ],
+        "notes": "4 credits",
+        "credits": 4
+      },
+      {
+        "code": "CICS 305",
+        "title": "Junior Year Writing",
+        "semesters": 1,
+        "prereqs": [
+          "CICS 210"
+        ],
+        "notes": "3 credits",
+        "credits": 3
+      },
+      {
+        "code": "COMPSCI 311",
+        "title": "Algorithms",
+        "semesters": 1,
+        "prereqs": [
+          "COMPSCI 250"
+        ],
+        "notes": "3 credits",
+        "credits": 3
+      },
+      {
+        "code": "COMPSCI 320",
+        "title": "Software Engineering (IE option)",
+        "semesters": 1,
+        "prereqs": [
+          "CICS 210"
+        ],
+        "notes": "3 credits",
+        "credits": 3
+      },
+      {
+        "code": "COMPSCI 326",
+        "title": "Web Programming (IE option)",
+        "semesters": 1,
+        "prereqs": [
+          "CICS 210"
+        ],
+        "notes": "3 credits",
+        "credits": 3
+      },
+      {
+        "code": "MATH 131",
+        "title": "Calculus I",
+        "semesters": 1,
+        "prereqs": [],
+        "notes": "4 credits",
+        "credits": 4
+      },
+      {
+        "code": "MATH 132",
+        "title": "Calculus II",
+        "semesters": 1,
+        "prereqs": [
+          "MATH 131"
+        ],
+        "notes": "4 credits",
+        "credits": 4
+      },
+      {
+        "code": "MATH 233",
+        "title": "Multivariate Calculus",
+        "semesters": 1,
+        "prereqs": [
+          "MATH 132"
+        ],
+        "notes": "4 credits",
+        "credits": 4
+      },
+      {
+        "code": "STAT 315",
+        "title": "Statistics (alt to MATH 233 for CS req)",
+        "semesters": 1,
+        "prereqs": [
+          "MATH 132"
+        ],
+        "notes": "3 credits",
+        "credits": 3
+      },
+      {
+        "code": "MATH 235",
+        "title": "Linear Algebra",
+        "semesters": 1,
+        "prereqs": [
+          "MATH 132"
+        ],
+        "notes": "3 credits",
+        "credits": 3
+      },
+      {
+        "code": "CHEM 111",
+        "title": "General Chemistry I",
+        "semesters": 1,
+        "prereqs": [],
+        "notes": "4 credits (Lab Science)",
+        "credits": 4
+      },
+      {
+        "code": "CHEM 121",
+        "title": "Chemistry I (Alt)",
+        "semesters": 1,
+        "prereqs": [],
+        "notes": "4 credits (Lab Science)",
+        "credits": 4
+      },
+      {
+        "code": "CHEM 112",
+        "title": "General Chemistry II",
+        "semesters": 1,
+        "prereqs": [
+          "CHEM 111",
+          "CHEM 121"
+        ],
+        "notes": "4 credits (Lab Science). In reality: CHEM 111 OR CHEM 121.",
+        "credits": 4
+      },
+      {
+        "code": "PHYSICS 151",
+        "title": "Physics I",
+        "semesters": 1,
+        "prereqs": [],
+        "notes": "4 credits (Lab Science)",
+        "credits": 4
+      },
+      {
+        "code": "PHYSICS 181",
+        "title": "Physics I (Alt)",
+        "semesters": 1,
+        "prereqs": [],
+        "notes": "4 credits (Lab Science)",
+        "credits": 4
+      },
+      {
+        "code": "PHYSICS 152",
+        "title": "Physics II",
+        "semesters": 1,
+        "prereqs": [
+          "PHYSICS 151",
+          "PHYSICS 181"
+        ],
+        "notes": "4 credits (Lab Science). In reality: PHYSICS 151 OR PHYSICS 181.",
+        "credits": 4
+      },
+      {
+        "code": "GEOLOGY 101",
+        "title": "Geology 101",
+        "semesters": 1,
+        "prereqs": [],
+        "notes": "4 credits (Lab Science)",
+        "credits": 4
+      },
+      {
+        "code": "GEOLOGY 103",
+        "title": "Intro Oceanography",
+        "semesters": 1,
+        "prereqs": [],
+        "notes": "4 credits (Lab Science)",
+        "credits": 4
+      },
+      {
+        "code": "GEOLOGY 131",
+        "title": "Experiencing Geology (Lab)",
+        "semesters": 1,
+        "prereqs": [],
+        "notes": "1 credit (Lab Science add-on)",
+        "credits": 1
+      },
+      {
+        "code": "EC-ENG 547",
+        "title": "Security Engineering",
+        "semesters": 1,
+        "prereqs": [],
+        "notes": "3 credits (Outside Approved)",
+        "credits": 3
+      },
+      {
+        "code": "LINGUIST 301",
+        "title": "Introduction to Syntax",
+        "semesters": 1,
+        "prereqs": [],
+        "notes": "3 credits (Outside Approved)",
+        "credits": 3
+      },
+      {
+        "code": "COMPSCI 350",
+        "title": "COMPSCI 300+ Elective (Slot A)",
+        "semesters": 1,
+        "prereqs": [],
+        "notes": "Placeholder",
+        "credits": 3
+      },
+      {
+        "code": "COMPSCI 351",
+        "title": "COMPSCI 300+ Elective (Slot B)",
+        "semesters": 1,
+        "prereqs": [],
+        "notes": "Placeholder",
+        "credits": 3
+      },
+      {
+        "code": "COMPSCI 352",
+        "title": "COMPSCI 300+ Elective (Slot C)",
+        "semesters": 1,
+        "prereqs": [],
+        "notes": "Placeholder",
+        "credits": 3
+      },
+      {
+        "code": "COMPSCI 401",
+        "title": "COMPSCI 400+ Elective (Slot A)",
+        "semesters": 1,
+        "prereqs": [],
+        "notes": "Placeholder",
+        "credits": 3
+      },
+      {
+        "code": "COMPSCI 402",
+        "title": "COMPSCI 400+ Elective (Slot B)",
+        "semesters": 1,
+        "prereqs": [],
+        "notes": "Placeholder",
+        "credits": 3
+      },
+      {
+        "code": "COMPSCI 403",
+        "title": "COMPSCI 400+ Elective (Slot C)",
+        "semesters": 1,
+        "prereqs": [],
+        "notes": "Placeholder",
+        "credits": 3
+      }
+    ],
+    "terms": [
+      {
+        "id": "y1-fall-2025",
+        "label": "Year 1 \u2014 Fall 2025",
+        "courses": [
+          {
+            "code": "CICS 110",
+            "title": "Foundations of Programming",
+            "semesters": 1,
+            "prereqs": [],
+            "notes": "4 credits",
+            "credits": 4
+          },
+          {
+            "code": "MATH 131",
+            "title": "Calculus I",
+            "semesters": 1,
+            "prereqs": [],
+            "notes": "4 credits",
+            "credits": 4
+          },
+          {
+            "code": "CHEM 111",
+            "title": "General Chemistry I",
+            "semesters": 1,
+            "prereqs": [],
+            "notes": "4 credits (Lab Science)",
+            "credits": 4
+          }
+        ]
+      },
+      {
+        "id": "y1-spring-2026",
+        "label": "Year 1 \u2014 Spring 2026",
+        "courses": [
+          {
+            "code": "CICS 160",
+            "title": "Object-Oriented Programming",
+            "semesters": 1,
+            "prereqs": [
+              "CICS 110"
+            ],
+            "notes": "4 credits",
+            "credits": 4
+          },
+          {
+            "code": "MATH 132",
+            "title": "Calculus II",
+            "semesters": 1,
+            "prereqs": [
+              "MATH 131"
+            ],
+            "notes": "4 credits",
+            "credits": 4
+          },
+          {
+            "code": "CHEM 112",
+            "title": "General Chemistry II",
+            "semesters": 1,
+            "prereqs": [
+              "CHEM 111",
+              "CHEM 121"
+            ],
+            "notes": "4 credits (Lab Science). 111 OR 121.",
+            "credits": 4
+          }
+        ]
+      },
+      {
+        "id": "y2-fall-2026",
+        "label": "Year 2 \u2014 Fall 2026",
+        "courses": [
+          {
+            "code": "CICS 210",
+            "title": "Data Structures",
+            "semesters": 1,
+            "prereqs": [
+              "CICS 160"
+            ],
+            "notes": "4 credits",
+            "credits": 4
+          },
+          {
+            "code": "MATH 235",
+            "title": "Linear Algebra",
+            "semesters": 1,
+            "prereqs": [
+              "MATH 132"
+            ],
+            "notes": "3 credits",
+            "credits": 3
+          },
+          {
+            "code": "PHYSICS 151",
+            "title": "Physics I",
+            "semesters": 1,
+            "prereqs": [],
+            "notes": "4 credits (Lab Science)",
+            "credits": 4
+          }
+        ]
+      },
+      {
+        "id": "y2-spring-2027",
+        "label": "Year 2 \u2014 Spring 2027",
+        "courses": [
+          {
+            "code": "COMPSCI 220",
+            "title": "Programming Methodology",
+            "semesters": 1,
+            "prereqs": [
+              "CICS 160"
+            ],
+            "notes": "4 credits",
+            "credits": 4
+          },
+          {
+            "code": "COMPSCI 250",
+            "title": "Intro to Computation",
+            "semesters": 1,
+            "prereqs": [
+              "CICS 210"
+            ],
+            "notes": "4 credits",
+            "credits": 4
+          },
+          {
+            "code": "MATH 233",
+            "title": "Multivariate Calculus",
+            "semesters": 1,
+            "prereqs": [
+              "MATH 132"
+            ],
+            "notes": "4 credits (or STAT 315)",
+            "credits": 4
+          }
+        ]
+      },
+      {
+        "id": "y3-fall-2027",
+        "label": "Year 3 \u2014 Fall 2027",
+        "courses": [
+          {
+            "code": "COMPSCI 230",
+            "title": "Systems Programming",
+            "semesters": 1,
+            "prereqs": [
+              "CICS 210"
+            ],
+            "notes": "4 credits",
+            "credits": 4
+          },
+          {
+            "code": "COMPSCI 240",
+            "title": "Reasoning Under Uncertainty",
+            "semesters": 1,
+            "prereqs": [
+              "CICS 210"
+            ],
+            "notes": "4 credits",
+            "credits": 4
+          },
+          {
+            "code": "CICS 305",
+            "title": "Junior Year Writing",
+            "semesters": 1,
+            "prereqs": [
+              "CICS 210"
+            ],
+            "notes": "3 credits",
+            "credits": 3
+          }
+        ]
+      },
+      {
+        "id": "y3-spring-2028",
+        "label": "Year 3 \u2014 Spring 2028",
+        "courses": [
+          {
+            "code": "COMPSCI 311",
+            "title": "Algorithms",
+            "semesters": 1,
+            "prereqs": [
+              "COMPSCI 250"
+            ],
+            "notes": "3 credits",
+            "credits": 3
+          },
+          {
+            "code": "COMPSCI 326",
+            "title": "Web Programming (IE option)",
+            "semesters": 1,
+            "prereqs": [
+              "CICS 210"
+            ],
+            "notes": "3 credits (IE)",
+            "credits": 3
+          },
+          {
+            "code": "COMPSCI 350",
+            "title": "COMPSCI 300+ Elective (Slot A)",
+            "semesters": 1,
+            "prereqs": [],
+            "notes": "Placeholder",
+            "credits": 3
+          }
+        ]
+      },
+      {
+        "id": "y4-fall-2028",
+        "label": "Year 4 \u2014 Fall 2028",
+        "courses": [
+          {
+            "code": "COMPSCI 401",
+            "title": "COMPSCI 400+ Elective (Slot A)",
+            "semesters": 1,
+            "prereqs": [],
+            "notes": "Placeholder",
+            "credits": 3
+          },
+          {
+            "code": "COMPSCI 402",
+            "title": "COMPSCI 400+ Elective (Slot B)",
+            "semesters": 1,
+            "prereqs": [],
+            "notes": "Placeholder",
+            "credits": 3
+          },
+          {
+            "code": "EC-ENG 547",
+            "title": "Security Engineering",
+            "semesters": 1,
+            "prereqs": [],
+            "notes": "3 credits (Outside Approved)",
+            "credits": 3
+          }
+        ]
+      },
+      {
+        "id": "y4-spring-2029",
+        "label": "Year 4 \u2014 Spring 2029",
+        "courses": [
+          {
+            "code": "COMPSCI 403",
+            "title": "COMPSCI 400+ Elective (Slot C)",
+            "semesters": 1,
+            "prereqs": [],
+            "notes": "Placeholder",
+            "credits": 3
+          },
+          {
+            "code": "COMPSCI 351",
+            "title": "COMPSCI 300+ Elective (Slot B)",
+            "semesters": 1,
+            "prereqs": [],
+            "notes": "Placeholder",
+            "credits": 3
+          },
+          {
+            "code": "LINGUIST 301",
+            "title": "Introduction to Syntax",
+            "semesters": 1,
+            "prereqs": [],
+            "notes": "3 credits (Outside Approved)",
+            "credits": 3
+          }
+        ]
+      }
+    ]
+  }
+}

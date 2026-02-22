@@ -8,7 +8,8 @@ export function Select({ className, children, ...props }: Props) {
     <select
       className={cn(
         "h-10 w-full rounded-xl border border-zinc-200 bg-white px-3 text-sm outline-none",
-        "focus:border-zinc-400 focus:ring-4 focus:ring-zinc-100",
+        "focus-visible:border-zinc-400 focus-visible:ring-4 focus-visible:ring-zinc-100",
+        "transition-[border-color,box-shadow] duration-200 ease-ios",
         className
       )}
       {...props}

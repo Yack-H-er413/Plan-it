@@ -1,25 +1,42 @@
-# Plan-it Frontend (UI-only)
+# Plan-it
 
-This is a **pure UI** implementation of the hackathon mockups:
-- Left sidebar: course library + (+) add course
-- Main area: term columns (planner) + add-term + “no term” popup
-- Right inspector: selected course editing (placeholder)
+Next.js (App Router) prerequisite-aware semester planner.
 
-> No backend, no prereq logic, no drag/drop wiring, no persistence.  
-> Buttons open/close UI, but do not change data.
+## Storage model (no database)
 
-## Run locally
+Plan-it stores planner data in the browser.
+
+* **Not signed in:** data is saved under a local profile in `localStorage`.
+* **Signed in with Google:** data is saved under a Google-account namespace in `localStorage` (so switching accounts switches workspaces on that device).
+
+There is no server-side database and no Google Drive integration.
+
+## Development
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open http://localhost:3000
+## Google Sign-in (Auth.js / NextAuth v5)
 
-## Where to edit
+1. Copy env template and fill values:
 
-- `app/page.tsx` – app entry
-- `components/layout/*` – header/sidebar/inspector
-- `components/planner/*` – planner columns & course cards
-- `components/modals/*` – add course / add term / term required popup
+```bash
+cp .env.example .env.local
+```
+
+2. Create a Google OAuth client in Google Cloud Console.
+
+Recommended local settings:
+
+* **Authorized JavaScript origins**: `http://localhost:3000`
+* **Authorized redirect URI**: `http://localhost:3000/api/auth/callback/google`
+
+3. Set these in `.env.local`:
+
+* `AUTH_SECRET` (generate with `npx auth secret`)
+* `AUTH_GOOGLE_ID`
+* `AUTH_GOOGLE_SECRET`
+
+Then run `npm run dev` and use **Log in / Sign up → Continue with Google**.
