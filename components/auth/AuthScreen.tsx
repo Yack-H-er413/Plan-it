@@ -1,13 +1,35 @@
+"use client";
+
+import * as React from "react";
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
+import { Modal } from "@/components/ui/Modal";
 import { GoogleIcon } from "@/components/icons/GoogleIcon";
 import { ArrowRight, CalendarDays, CheckCircle2, LockKeyhole } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type Mode = "login" | "signup";
 
 export function AuthScreen({ mode }: { mode: Mode }) {
   const isLogin = mode === "login";
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [adminOpen, setAdminOpen] = React.useState(false);
+  const [adminName, setAdminName] = React.useState("");
+  const [adminError, setAdminError] = React.useState<string | null>(null);
+
+  // If someone lands on /login?admin=1, open the admin modal automatically.
+  React.useEffect(() => {
+    if (!isLogin) return;
+    const wantsAdmin = searchParams.get("admin") === "1";
+    if (!wantsAdmin) return;
+    setAdminError(null);
+    setAdminOpen(true);
+  }, [isLogin, searchParams]);
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -92,6 +114,21 @@ export function AuthScreen({ mode }: { mode: Mode }) {
                 Continue with Google
               </button>
 
+              {isLogin ? (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="w-full justify-center"
+                  onClick={() => {
+                    setAdminError(null);
+                    setAdminName("");
+                    setAdminOpen(true);
+                  }}
+                >
+                  Administrator
+                </Button>
+              ) : null}
+
               <div className="flex items-center justify-between gap-3 text-sm">
                 <p className="text-zinc-600">
                   {isLogin ? "No account yet?" : "Already have an account?"}
@@ -110,6 +147,59 @@ export function AuthScreen({ mode }: { mode: Mode }) {
           </CardContent>
         </Card>
       </div>
+
+      <Modal
+        open={adminOpen}
+        onClose={() => setAdminOpen(false)}
+        title="Administrator access"
+        description="Enter a username to open the admin workspace (for aesthetics only)."
+        footer={
+          <div className="flex items-center justify-end gap-2">
+            <Button variant="secondary" onClick={() => setAdminOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                const trimmed = adminName.trim();
+                if (!trimmed) {
+                  setAdminError("Please enter a username.");
+                  return;
+                }
+                try {
+                  sessionStorage.setItem("planit_admin_username", trimmed);
+                } catch {
+                  // ignore
+                }
+                setAdminOpen(false);
+                router.push("/admin");
+              }}
+            >
+              Continue
+            </Button>
+          </div>
+        }
+      >
+        <div className="grid gap-3">
+          {adminError ? (
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+              {adminError}
+            </div>
+          ) : null}
+
+          <div className="grid gap-2">
+            <Label>Username</Label>
+            <Input
+              value={adminName}
+              onChange={(e) => setAdminName(e.target.value)}
+              placeholder="e.g., advisor01"
+              autoFocus
+            />
+            <p className="text-xs text-zinc-600">
+              This isn’t saved to a database yet — it’s just to personalize the admin view.
+            </p>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

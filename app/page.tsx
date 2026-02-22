@@ -5,9 +5,9 @@ import { GoogleIcon } from "@/components/icons/GoogleIcon";
 import {
   ArrowRight,
   CalendarDays,
-  Layers,
+  ClipboardList,
+  Link2,
   ShieldCheck,
-  Waypoints,
 } from "lucide-react";
 
 export default function Page() {
@@ -27,7 +27,9 @@ export default function Page() {
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold">Plan-it</span>
               </div>
-              <p className="text-xs text-zinc-600">Course mapping & prereq planning</p>
+              <p className="text-xs text-zinc-600">
+                Prerequisite-aware semester planner
+              </p>
             </div>
           </div>
 
@@ -35,6 +37,9 @@ export default function Page() {
             <ButtonLink variant="ghost" size="sm" href="/planner">
               Open planner
               <ArrowRight className="h-4 w-4" />
+            </ButtonLink>
+            <ButtonLink variant="secondary" size="sm" href="/login?admin=1">
+              Administrator
             </ButtonLink>
             <ButtonLink variant="secondary" size="sm" href="/login">
               Log in
@@ -51,42 +56,55 @@ export default function Page() {
         <section className="mx-auto w-full max-w-6xl px-4 pb-10 pt-6">
           <div className="grid items-center gap-8 lg:grid-cols-[1.15fr_0.85fr]">
             <div>
-              <Badge className="mb-4" variant="success">
-                Google sign-in only
-              </Badge>
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                <Badge variant="success">Works without an account</Badge>
+                <Badge variant="warn">Google sign-in coming soon</Badge>
+              </div>
               <h1 className="text-balance text-4xl font-semibold tracking-tight md:text-5xl">
-                Map prerequisites visually. Plan semesters with confidence.
+                Plan semesters with prerequisite checks built in.
               </h1>
               <p className="mt-4 max-w-xl text-pretty text-base text-zinc-700 md:text-lg">
-                Turn static course PDFs into a navigable plan graph with prerequisite chains,
-                AND/OR requirement groups, and validation-friendly structure.
+                Plan smarter. Graduate faster. <br />
+                Mapping your degree, one class at a time.
               </p>
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <ButtonLink href="/signup" size="lg" className="justify-center">
-                  <GoogleIcon className="h-5 w-5" />
-                  Continue with Google
-                </ButtonLink>
                 <ButtonLink
                   href="/planner"
-                  variant="secondary"
                   size="lg"
                   className="justify-center"
                 >
                   Open planner
                   <ArrowRight className="h-5 w-5" />
                 </ButtonLink>
+                <ButtonLink
+                  href="/login?admin=1"
+                  variant="secondary"
+                  size="lg"
+                  className="justify-center"
+                >
+                  Administrator
+                </ButtonLink>
+                <ButtonLink
+                  href="/signup"
+                  variant="secondary"
+                  size="lg"
+                  className="justify-center"
+                >
+                  <GoogleIcon className="h-5 w-5" />
+                  Continue with Google
+                </ButtonLink>
               </div>
 
               <div className="mt-6 flex flex-wrap items-center gap-2 text-xs text-zinc-600">
                 <span className="rounded-full border border-zinc-200 bg-white/70 px-3 py-1 shadow-soft">
-                  No passwords
+                  Prereq checks
                 </span>
                 <span className="rounded-full border border-zinc-200 bg-white/70 px-3 py-1 shadow-soft">
-                  Clean export/share UI
+                  Local autosave
                 </span>
                 <span className="rounded-full border border-zinc-200 bg-white/70 px-3 py-1 shadow-soft">
-                  Shareable plans
+                  Shareable link
                 </span>
               </div>
             </div>
@@ -112,7 +130,8 @@ export default function Page() {
                   <div className="h-44 rounded-2xl border border-zinc-200 bg-white" />
                 </div>
                 <p className="mt-4 text-xs text-zinc-600">
-                  Open the planner workspace to build, validate, and share your plan.
+                  Open the planner workspace to build a library, lay out terms,
+                  and share.
                 </p>
               </div>
             </Card>
@@ -125,22 +144,12 @@ export default function Page() {
             <Card>
               <CardContent className="pt-4">
                 <div className="mb-3 grid h-10 w-10 place-items-center rounded-2xl bg-zinc-900 text-white shadow-soft">
-                  <Waypoints className="h-5 w-5" />
+                  <ClipboardList className="h-5 w-5" />
                 </div>
-                <h2 className="text-sm font-semibold">Plan graph</h2>
+                <h2 className="text-sm font-semibold">Course library</h2>
                 <p className="mt-1 text-sm text-zinc-600">
-                  Course nodes and prerequisite edges, structured for quick reasoning.
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-4">
-                <div className="mb-3 grid h-10 w-10 place-items-center rounded-2xl bg-zinc-900 text-white shadow-soft">
-                  <Layers className="h-5 w-5" />
-                </div>
-                <h2 className="text-sm font-semibold">AND/OR blocks</h2>
-                <p className="mt-1 text-sm text-zinc-600">
-                  Represent “2 of N” requirements cleanly alongside standard prereqs.
+                  Add courses for any school: code, title, credits, notes, and
+                  prerequisites.
                 </p>
               </CardContent>
             </Card>
@@ -149,9 +158,22 @@ export default function Page() {
                 <div className="mb-3 grid h-10 w-10 place-items-center rounded-2xl bg-zinc-900 text-white shadow-soft">
                   <ShieldCheck className="h-5 w-5" />
                 </div>
-                <h2 className="text-sm font-semibold">Validation-ready UI</h2>
+                <h2 className="text-sm font-semibold">Prereq validation</h2>
                 <p className="mt-1 text-sm text-zinc-600">
-                  Clear visual states for invalid chains, cycles, and missing requirements.
+                  Prevents placing a course before its prerequisites (or in the
+                  same term).
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-4">
+                <div className="mb-3 grid h-10 w-10 place-items-center rounded-2xl bg-zinc-900 text-white shadow-soft">
+                  <Link2 className="h-5 w-5" />
+                </div>
+                <h2 className="text-sm font-semibold">Share / import</h2>
+                <p className="mt-1 text-sm text-zinc-600">
+                  Copy a link to share your plan or import someone else’s in one
+                  step.
                 </p>
               </CardContent>
             </Card>
@@ -162,17 +184,21 @@ export default function Page() {
               <div>
                 <h3 className="text-base font-semibold">Ready to try it?</h3>
                 <p className="mt-1 text-sm text-zinc-600">
-                  Sign in with Google, then open your planning workspace.
+                  Open the planner now. Google sign-in will be wired up later.
                 </p>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
-                <ButtonLink href="/login" variant="secondary" className="justify-center">
-                  <GoogleIcon className="h-5 w-5" />
-                  Log in
+                <ButtonLink
+                  href="/planner"
+                  variant="secondary"
+                  className="justify-center"
+                >
+                  Open planner
+                  <ArrowRight className="h-5 w-5" />
                 </ButtonLink>
-                <ButtonLink href="/signup" className="justify-center">
+                <ButtonLink href="/login" className="justify-center">
                   <GoogleIcon className="h-5 w-5" />
-                  Create account
+                  Log in with Google
                 </ButtonLink>
               </div>
             </div>
@@ -181,11 +207,19 @@ export default function Page() {
 
         <footer className="mx-auto w-full max-w-6xl px-4 pb-10">
           <div className="flex flex-col items-start justify-between gap-3 border-t border-zinc-200 pt-6 sm:flex-row sm:items-center">
-            <p className="text-xs text-zinc-600">© {new Date().getFullYear()} Plan-it</p>
+            <p className="text-xs text-zinc-600">
+              © {new Date().getFullYear()} Plan-it
+            </p>
             <div className="flex items-center gap-2 text-xs text-zinc-600">
-              <span className="rounded-full border border-zinc-200 bg-white/70 px-3 py-1">Next.js</span>
-              <span className="rounded-full border border-zinc-200 bg-white/70 px-3 py-1">Tailwind</span>
-              <span className="rounded-full border border-zinc-200 bg-white/70 px-3 py-1">Google sign-in</span>
+              <span className="rounded-full border border-zinc-200 bg-white/70 px-3 py-1">
+                Next.js
+              </span>
+              <span className="rounded-full border border-zinc-200 bg-white/70 px-3 py-1">
+                Tailwind
+              </span>
+              <span className="rounded-full border border-zinc-200 bg-white/70 px-3 py-1">
+                Google sign-in
+              </span>
             </div>
           </div>
         </footer>
