@@ -83,6 +83,14 @@ export function AppShell({ workspaceId }: { workspaceId: string }) {
     [courses, terms]
   );
 
+  const placedCourseCodes = React.useMemo(() => {
+    const codes = new Set<string>();
+    for (const t of terms) {
+      for (const c of t.courses) codes.add(c.code);
+    }
+    return Array.from(codes);
+  }, [terms]);
+
   // Initial load: URL state wins; else localStorage; else blank.
   React.useEffect(() => {
     setHydrated(false);
@@ -337,12 +345,12 @@ export function AppShell({ workspaceId }: { workspaceId: string }) {
         credits={{
           total: sumTermCredits(terms),
           completed: sumTermCredits(terms, { completedOnly: true }),
-          goal: 120,
+          goal: workspace?.creditGoal ?? 120,
         }}
       />
       <main className="mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-0 lg:grid-cols-[360px_1fr]">
         <div className="h-[calc(100vh-57px)]">
-          <Sidebar courses={courses} onAddCourse={addCourse} onOpenShare={() => setShareOpen(true)} />
+          <Sidebar courses={courses} placedCourseCodes={placedCourseCodes} onAddCourse={addCourse} onOpenShare={() => setShareOpen(true)} />
         </div>
         <div className="h-[calc(100vh-57px)]">
           <DropPlanArea

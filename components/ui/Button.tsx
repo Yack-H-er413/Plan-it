@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { cn } from "./cn";
 import { springs } from "@/components/motion/tokens";
 
@@ -17,11 +17,14 @@ export function Button({
   type,
   ...props
 }: Props) {
+  const reduceMotion = useReducedMotion();
   const base =
     [
       "inline-flex items-center justify-center gap-2 rounded-2xl font-medium",
-      "transition-[background-color,border-color,box-shadow] duration-200 ease-ios",
+      "transition-[background-color,border-color,box-shadow,opacity] duration-200 ease-ios",
       "will-change-transform",
+      "hover:opacity-95",
+      // Consistent keyboard focus across the app
       "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-zinc-200/70",
       "disabled:opacity-50 disabled:pointer-events-none",
     ].join(" ");
@@ -35,14 +38,15 @@ export function Button({
     sm: "h-9 px-3 text-sm",
     md: "h-10 px-4 text-sm",
     lg: "h-11 px-5 text-base",
-    icon: "h-10 w-10",
+    // Icon-only controls should meet accessible hit target size
+    icon: "h-10 w-10 min-h-[44px] min-w-[44px]",
   };
 
   return (
     <motion.button
       type={type ?? "button"}
       whileHover={
-        props.disabled
+        props.disabled || reduceMotion
           ? undefined
           : {
               y: -0.75,
@@ -50,7 +54,7 @@ export function Button({
             }
       }
       whileTap={
-        props.disabled
+        props.disabled || reduceMotion
           ? undefined
           : {
               y: 0,

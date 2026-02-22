@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { ArrowRight, CalendarDays, CheckCircle2, LockKeyhole } from "lucide-react";
 
 type Mode = "login" | "signup";
@@ -14,21 +16,38 @@ export function AuthScreen({ mode }: { mode: Mode }) {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white via-zinc-50 to-zinc-100" />
       <div className="pointer-events-none absolute -top-24 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-gradient-to-br from-blue-200/50 via-fuchsia-200/30 to-emerald-200/30 blur-3xl" />
 
-      <div className="relative mx-auto grid w-full max-w-6xl gap-8 px-4 py-10 lg:grid-cols-2 lg:items-center">
-        {/* left */}
-        <div>
-          <div className="flex items-center gap-3">
+
+      <header className="relative z-10">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-5">
+          <Link
+            href="/"
+            aria-label="Back to landing page"
+            className="flex items-center gap-3 rounded-2xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-zinc-200/70"
+          >
             <div className="grid h-10 w-10 place-items-center rounded-2xl bg-zinc-900 text-white shadow-soft">
               <CalendarDays className="h-5 w-5" />
             </div>
-            <div>
+            <div className="leading-tight">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold">Plan-it</span>
+                <Badge variant="info">{isLogin ? "Log in" : "Sign up"}</Badge>
               </div>
               <p className="text-xs text-zinc-600">Course mapping & prereq planning</p>
             </div>
-          </div>
+          </Link>
 
+          <nav className="flex items-center gap-2">
+            <ThemeToggle size="sm" />
+            <ButtonLink href="/workspaces" variant="ghost" size="sm">
+              Workspaces
+              <ArrowRight className="h-4 w-4" />
+            </ButtonLink>
+          </nav>
+        </div>
+      </header>
+      <div className="relative mx-auto grid w-full max-w-6xl gap-8 px-4 py-10 lg:grid-cols-2 lg:items-center">
+        {/* left */}
+        <div>
           <h1 className="mt-6 text-balance text-3xl font-semibold tracking-tight md:text-4xl">
             {isLogin ? "Welcome back" : "Create your account"}
           </h1>

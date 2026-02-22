@@ -6,6 +6,8 @@ export type WorkspaceMeta = {
   id: string;
   name: string;
   provider: WorkspaceProvider;
+  /** Target total credits for the plan progress indicator. */
+  creditGoal: number;
   createdAt: number;
   updatedAt: number;
 };
@@ -13,6 +15,8 @@ export type WorkspaceMeta = {
 const INDEX_KEY = "planit_workspaces_index_v1";
 const LEGACY_SINGLE_KEY = "planit_state_v1";
 const STATE_PREFIX = "planit_workspace_state_v1::";
+
+const DEFAULT_CREDIT_GOAL = 120;
 
 function now() {
   return Date.now();
@@ -27,6 +31,13 @@ function safeParse<T>(raw: string | null): T | null {
   }
 }
 
+function normalizeCreditGoal(value: unknown): number {
+  const n = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(n)) return DEFAULT_CREDIT_GOAL;
+  // Allow 0, but avoid negative / absurdly large values.
+  return Math.min(1000, Math.max(0, Math.round(n)));
+}
+
 function readIndex(): WorkspaceMeta[] {
   if (typeof window === "undefined") return [];
   const parsed = safeParse<unknown>(localStorage.getItem(INDEX_KEY));
@@ -38,6 +49,7 @@ function readIndex(): WorkspaceMeta[] {
       id: String(x.id),
       name: String(x.name),
       provider: (x.provider === "google" ? "google" : "local") as WorkspaceProvider,
+      creditGoal: normalizeCreditGoal((x as any).creditGoal),
       createdAt: Number(x.createdAt) || now(),
       updatedAt: Number(x.updatedAt) || now(),
     }));
@@ -62,7 +74,7 @@ export function getWorkspace(id: string): WorkspaceMeta | null {
   return all.find((w) => w.id === id) ?? null;
 }
 
-export function ensureWorkspaceExists(id: string, opts?: { name?: string }) {
+export function ensureWorkspaceExists(id: string, opts?: { name?: string; creditGoal?: number }) {
   const existing = getWorkspace(id);
   if (existing) return existing;
   const createdAt = now();
@@ -70,6 +82,7 @@ export function ensureWorkspaceExists(id: string, opts?: { name?: string }) {
     id,
     name: (opts?.name ?? "Untitled plan").trim() || "Untitled plan",
     provider: "local",
+    creditGoal: normalizeCreditGoal(opts?.creditGoal),
     createdAt,
     updatedAt: createdAt,
   };
@@ -78,13 +91,16 @@ export function ensureWorkspaceExists(id: string, opts?: { name?: string }) {
   return meta;
 }
 
-export function createWorkspace(opts?: { name?: string; initialStateUrl?: string }) {
+export function createWorkspace(opts?: { name?: string; initialStateUrl?: string; creditGoal?: number }) {
   const id =
     typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
       ? crypto.randomUUID()
       : `${now()}-${Math.random().toString(16).slice(2)}`;
 
-  const meta = ensureWorkspaceExists(id, { name: opts?.name });
+  const meta = ensureWorkspaceExists(id, {
+    name: opts?.name,
+    creditGoal: opts?.creditGoal,
+  });
 
   if (opts?.initialStateUrl) {
     try {
@@ -105,6 +121,13 @@ export function renameWorkspace(id: string, name: string) {
   writeIndex(next);
 }
 
+export function setWorkspaceCreditGoal(id: string, creditGoal: number) {
+  const goal = normalizeCreditGoal(creditGoal);
+  const all = readIndex();
+  const next = all.map((w) => (w.id === id ? { ...w, creditGoal: goal, updatedAt: now() } : w));
+  writeIndex(next);
+}
+
 export function deleteWorkspace(id: string) {
   const all = readIndex();
   writeIndex(all.filter((w) => w.id !== id));
@@ -121,6 +144,7 @@ export function duplicateWorkspace(id: string) {
   const next = createWorkspace({
     name: src ? `${src.name} (copy)` : "Copy",
     initialStateUrl: raw ?? undefined,
+    creditGoal: src?.creditGoal,
   });
   return next;
 }

@@ -12,13 +12,22 @@ import { AddCourseDialog } from "@/components/modals/AddCourseDialog";
 import { springs } from "@/components/motion/tokens";
 
 type Props = {
+  /** Full course library for the workspace. */
   courses: Course[];
+  /** Course codes that are already placed into the term schedule (hide from sidebar). */
+  placedCourseCodes?: string[];
   onAddCourse: (course: Course) => void;
   onOpenShare: () => void;
 };
 
-export function Sidebar({ courses, onAddCourse, onOpenShare }: Props) {
+export function Sidebar({ courses, placedCourseCodes, onAddCourse, onOpenShare }: Props) {
   const [openAdd, setOpenAdd] = React.useState(false);
+
+  const displayCourses = React.useMemo(() => {
+    if (!placedCourseCodes || placedCourseCodes.length === 0) return courses;
+    const hidden = new Set(placedCourseCodes);
+    return courses.filter((c) => !hidden.has(c.code));
+  }, [courses, placedCourseCodes]);
 
   const getCredits = React.useCallback((c: Course) => {
     if (typeof c.credits === "number" && !Number.isNaN(c.credits) && c.credits > 0) return c.credits;
@@ -70,10 +79,22 @@ export function Sidebar({ courses, onAddCourse, onOpenShare }: Props) {
               </Button>
             </div>
           </motion.div>
+        ) : displayCourses.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.99 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={springs.soft}
+            className="rounded-3xl border border-dashed border-zinc-300 bg-zinc-50 p-4"
+          >
+            <div className="text-sm font-semibold">All courses are placed</div>
+            <p className="mt-1 text-sm text-zinc-600">
+              Remove a course from a term to bring it back here, or add a new course (+).
+            </p>
+          </motion.div>
         ) : (
           <motion.div layout className="space-y-3">
             <AnimatePresence mode="popLayout">
-              {courses.map((c) => (
+              {displayCourses.map((c) => (
                 <motion.div
                   key={c.code}
                   layout

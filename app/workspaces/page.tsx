@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { Badge } from "@/components/ui/Badge";
@@ -9,6 +10,7 @@ import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Modal } from "@/components/ui/Modal";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { ConfirmDialog } from "@/components/modals/ConfirmDialog";
 import { GoogleIcon } from "@/components/icons/GoogleIcon";
 import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
@@ -28,6 +30,7 @@ import {
   listWorkspaces,
   migrateLegacyPlanIfNeeded,
   renameWorkspace,
+  setWorkspaceCreditGoal,
   type WorkspaceMeta,
 } from "@/components/workspaces/workspacesStorage";
 
@@ -53,6 +56,7 @@ export default function Page() {
   const [renameOpen, setRenameOpen] = React.useState(false);
   const [renameId, setRenameId] = React.useState<string | null>(null);
   const [renameValue, setRenameValue] = React.useState<string>("");
+  const [creditGoalValue, setCreditGoalValue] = React.useState<string>("120");
 
   const [deleteId, setDeleteId] = React.useState<string | null>(null);
 
@@ -68,6 +72,7 @@ export default function Page() {
   const openRename = React.useCallback((ws: WorkspaceMeta) => {
     setRenameId(ws.id);
     setRenameValue(ws.name);
+    setCreditGoalValue(String(ws.creditGoal ?? 120));
     setRenameOpen(true);
   }, []);
 
@@ -93,7 +98,7 @@ export default function Page() {
 
       <header className="relative z-10">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-5">
-          <div className="flex items-center gap-3">
+          <Link href="/" aria-label="Back to landing page" className="flex items-center gap-3 rounded-2xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-zinc-200/70">
             <div className="grid h-10 w-10 place-items-center rounded-2xl bg-zinc-900 text-white shadow-soft">
               <CalendarDays className="h-5 w-5" />
             </div>
@@ -104,12 +109,9 @@ export default function Page() {
               </div>
               <p className="text-xs text-zinc-600">Create, save, and switch between plans</p>
             </div>
-          </div>
+          </Link>
 
           <nav className="flex items-center gap-2">
-            <ButtonLink variant="ghost" size="sm" href="/">
-              Landing
-            </ButtonLink>
             {status === "authenticated" ? (
               <>
                 <div className="hidden items-center gap-2 rounded-2xl border border-zinc-200 bg-white/70 px-3 py-1 text-xs text-zinc-700 shadow-soft sm:flex">
@@ -146,6 +148,7 @@ export default function Page() {
                 </ButtonLink>
               </>
             )}
+            <ThemeToggle size="sm" />
           </nav>
         </div>
       </header>
@@ -219,6 +222,7 @@ export default function Page() {
                         <p className="mt-1 text-xs text-zinc-600">
                           Updated {formatUpdatedAt(ws.updatedAt)}
                         </p>
+                        <p className="mt-1 text-xs text-zinc-600">Goal {ws.creditGoal} credits</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge variant={ws.provider === "google" ? "info" : "success"}>
@@ -240,7 +244,7 @@ export default function Page() {
 
                       <Button variant="secondary" onClick={() => openRename(ws)}>
                         <Pencil className="h-4 w-4" />
-                        Rename
+                        Edit
                       </Button>
 
                       <Button variant="secondary" onClick={() => onDuplicate(ws.id)}>
@@ -267,8 +271,8 @@ export default function Page() {
           setRenameOpen(false);
           setRenameId(null);
         }}
-        title="Rename workspace"
-        description="Choose a name to help you find this plan later."
+        title="Workspace settings"
+        description="Rename the workspace and set a credit goal for the progress bar."
         footer={
           <div className="flex items-center justify-end gap-2">
             <Button
@@ -284,6 +288,8 @@ export default function Page() {
               onClick={() => {
                 if (!renameId) return;
                 renameWorkspace(renameId, renameValue);
+                const parsed = Number(creditGoalValue);
+                if (Number.isFinite(parsed)) setWorkspaceCreditGoal(renameId, parsed);
                 setRenameOpen(false);
                 setRenameId(null);
                 refresh();
@@ -304,6 +310,20 @@ export default function Page() {
             onChange={(e) => setRenameValue(e.target.value)}
             placeholder="e.g., CS degree plan"
           />
+
+          <label className="mt-2 text-sm font-medium" htmlFor="workspace-credit-goal">
+            Credit goal
+          </label>
+          <Input
+            id="workspace-credit-goal"
+            type="number"
+            min={0}
+            step={1}
+            value={creditGoalValue}
+            onChange={(e) => setCreditGoalValue(e.target.value)}
+            placeholder="120"
+          />
+          <p className="text-xs text-zinc-600">Used to compute the progress bar percentage.</p>
         </div>
       </Modal>
 

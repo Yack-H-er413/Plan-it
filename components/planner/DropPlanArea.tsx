@@ -126,20 +126,22 @@ export function DropPlanArea({
                             {t.courses.length} course{t.courses.length === 1 ? "" : "s"}
                           </Badge>
                           <Badge variant="neutral">{sumCredits(t.courses)} cr</Badge>
-                          <button
+                          <Button
                             type="button"
+                            size="sm"
+                            variant="ghost"
                             onClick={() => onToggleTermCompleted(t.id)}
                             className={
-                              "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs " +
+                              "h-6 rounded-full border px-2 py-0.5 text-xs " +
                               (t.completed
-                                ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                                : "border-zinc-200 bg-white text-zinc-600")
+                                ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                                : "border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50")
                             }
                             aria-pressed={!!t.completed}
                           >
                             <CheckCircle2 className="h-3.5 w-3.5" />
                             {t.completed ? "Completed" : "Planned"}
-                          </button>
+                          </Button>
                         </div>
                       </div>
                       <Button
