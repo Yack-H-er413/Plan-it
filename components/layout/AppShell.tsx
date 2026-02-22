@@ -19,14 +19,32 @@ import {
 } from "@/components/share/plannerShare";
 import { springs } from "@/components/motion/tokens";
 
+function sumCredits(courses: Course[]): number {
+  return courses.reduce((acc, c) => {
+    if (typeof c.credits === "number" && !Number.isNaN(c.credits)) return acc + c.credits;
+    const m = (c.notes ?? "").match(/(\d+(?:\.\d+)?)\s*credits?/i);
+    if (m) return acc + Number(m[1]);
+    return acc;
+  }, 0);
+}
+
+function sumTermCredits(terms: Term[], opts: { completedOnly?: boolean } = {}): number {
+  const { completedOnly } = opts;
+  return terms.reduce((acc, t) => {
+    if (completedOnly && !t.completed) return acc;
+    return acc + sumCredits(t.courses);
+  }, 0);
+}
+
+function normalizeTerms(input: Term[]): Term[] {
+  return input.map((t) => ({ ...t, completed: !!t.completed }));
+}
+
 const STORAGE_KEY = "planit_state_v1";
 
 function makeId(prefix: string) {
-  // crypto.randomUUID is widely supported in modern browsers.
-  // Fall back to a time-based id if unavailable.
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return `${prefix}-${(crypto as any).randomUUID()}`;
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return `${prefix}-${crypto.randomUUID()}`;
   }
   return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
@@ -61,7 +79,7 @@ export function AppShell() {
     const fromUrl = decodePlannerStateFromUrl(window.location.href);
     if (fromUrl) {
       setCourses(fromUrl.courseLibrary);
-      setTerms(fromUrl.terms);
+      setTerms(normalizeTerms(fromUrl.terms));
       return;
     }
 
@@ -71,7 +89,7 @@ export function AppShell() {
     const restored = decodePlannerStateFromUrl(raw);
     if (restored) {
       setCourses(restored.courseLibrary);
-      setTerms(restored.terms);
+      setTerms(normalizeTerms(restored.terms));
     }
   }, []);
 
@@ -119,7 +137,11 @@ export function AppShell() {
   const addTerm = React.useCallback((label: string) => {
     const trimmed = label.trim();
     if (!trimmed) return;
-    setTerms((prev) => [...prev, { id: makeId("term"), label: trimmed, courses: [] }]);
+    setTerms((prev) => [...prev, { id: makeId("term"), label: trimmed, courses: [], completed: false }]);
+  }, []);
+
+  const toggleTermCompleted = React.useCallback((termId: string) => {
+    setTerms((prev) => prev.map((t) => (t.id === termId ? { ...t, completed: !t.completed } : t)));
   }, []);
 
   const removeCourseFromTerm = React.useCallback((termId: string, courseCode: string) => {
@@ -141,6 +163,7 @@ export function AppShell() {
 
   const deleteTerm = React.useCallback((termId: string) => {
     setTerms((prev) => prev.filter((t) => t.id !== termId));
+    setDeleteTermTarget(null);
   }, []);
 
   function validatePlacement(nextCourse: Course, targetTermId: string, snapshotTerms: Term[]) {
@@ -221,13 +244,13 @@ export function AppShell() {
           // New term is appended to the end of the plan.
           const id = makeId("term");
           // Validate against the term that will exist at the end.
-          const nextTermsSnapshot: Term[] = [...terms, { id, label, courses: [] }];
+          const nextTermsSnapshot: Term[] = [...terms, { id, label, courses: [], completed: false }];
           const v = validatePlacement(course, id, nextTermsSnapshot);
           if (!v.ok) {
             setPlaceError(v.message);
             return;
           }
-          setTerms((prev) => [...prev, { id, label, courses: [course] }]);
+          setTerms((prev) => [...prev, { id, label, courses: [course], completed: false }]);
           setPlaceOpen(false);
           setPendingCourseCode(null);
           return;
@@ -262,7 +285,7 @@ export function AppShell() {
     if (!restored) return false;
 
     setCourses(restored.courseLibrary);
-    setTerms(restored.terms);
+    setTerms(normalizeTerms(restored.terms));
 
     // Update the current URL so refresh keeps the imported state.
     try {
@@ -281,7 +304,15 @@ export function AppShell() {
       animate={{ opacity: 1 }}
       transition={springs.soft}
     >
-      <TopNav onOpenShare={() => setShareOpen(true)} onReset={requestReset} />
+      <TopNav
+        onOpenShare={() => setShareOpen(true)}
+        onReset={requestReset}
+        credits={{
+          total: sumTermCredits(terms),
+          completed: sumTermCredits(terms, { completedOnly: true }),
+          goal: 120,
+        }}
+      />
       <main className="mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-0 lg:grid-cols-[360px_1fr]">
         <div className="h-[calc(100vh-57px)]">
           <Sidebar courses={courses} onAddCourse={addCourse} onOpenShare={() => setShareOpen(true)} />
@@ -293,6 +324,7 @@ export function AppShell() {
             onAddTerm={addTerm}
             onRemoveCourseFromTerm={removeCourseFromTerm}
             onDeleteTerm={requestDeleteTerm}
+            onToggleTermCompleted={toggleTermCompleted}
           />
         </div>
       </main>

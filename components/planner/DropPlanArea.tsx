@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { CourseChip } from "@/components/planner/CourseChip";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, CheckCircle2 } from "lucide-react";
 import { springs } from "@/components/motion/tokens";
 
 function sumCredits(courses: Course[]): number {
@@ -25,12 +25,14 @@ export function DropPlanArea({
   onAddTerm,
   onRemoveCourseFromTerm,
   onDeleteTerm,
+  onToggleTermCompleted,
 }: {
   terms: Term[];
   onCourseDropped: (courseCode: string) => void;
   onAddTerm: (label: string) => void;
   onRemoveCourseFromTerm: (termId: string, courseCode: string) => void;
   onDeleteTerm: (termId: string) => void;
+  onToggleTermCompleted: (termId: string) => void;
 }) {
   const [newTermLabel, setNewTermLabel] = React.useState("");
 
@@ -124,6 +126,20 @@ export function DropPlanArea({
                             {t.courses.length} course{t.courses.length === 1 ? "" : "s"}
                           </Badge>
                           <Badge variant="neutral">{sumCredits(t.courses)} cr</Badge>
+                          <button
+                            type="button"
+                            onClick={() => onToggleTermCompleted(t.id)}
+                            className={
+                              "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs " +
+                              (t.completed
+                                ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                                : "border-zinc-200 bg-white text-zinc-600")
+                            }
+                            aria-pressed={!!t.completed}
+                          >
+                            <CheckCircle2 className="h-3.5 w-3.5" />
+                            {t.completed ? "Completed" : "Planned"}
+                          </button>
                         </div>
                       </div>
                       <Button
