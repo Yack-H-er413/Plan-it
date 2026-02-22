@@ -131,13 +131,13 @@ export function DropPlanArea({
                             size="sm"
                             variant="ghost"
                             onClick={() => onToggleTermCompleted(t.id)}
-                            aria-pressed={!!t.completed}
                             className={
                               "h-6 rounded-full border px-2 py-0.5 text-xs " +
                               (t.completed
                                 ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
                                 : "border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50")
                             }
+                            aria-pressed={!!t.completed}
                           >
                             <CheckCircle2 className="h-3.5 w-3.5" />
                             {t.completed ? "Completed" : "Planned"}

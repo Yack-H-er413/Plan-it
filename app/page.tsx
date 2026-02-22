@@ -1,10 +1,12 @@
+import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
 import { Card, CardContent } from "@/components/ui/Card";
 import { ButtonLink } from "@/components/ui/ButtonLink";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { GoogleIcon } from "@/components/icons/GoogleIcon";
+import { PlanItLogo } from "@/components/branding/PlanItLogo";
 import {
   ArrowRight,
-  CalendarDays,
   ClipboardList,
   Link2,
   ShieldCheck,
@@ -19,9 +21,9 @@ export default function Page() {
 
       <header className="relative z-10">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-5">
-          <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-zinc-900 text-white shadow-soft">
-              <CalendarDays className="h-5 w-5" />
+          <Link href="/" aria-label="Back to landing page" className="flex items-center gap-3 rounded-2xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-zinc-200/70">
+            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-transparent shadow-soft">
+              <PlanItLogo size={40} className="h-10 w-10" priority />
             </div>
             <div className="leading-tight">
               <div className="flex items-center gap-2">
@@ -31,15 +33,12 @@ export default function Page() {
                 Prerequisite-aware semester planner
               </p>
             </div>
-          </div>
+          </Link>
 
           <nav className="flex items-center gap-2">
-            <ButtonLink variant="ghost" size="sm" href="/planner">
-              Open planner
+            <ButtonLink variant="ghost" size="sm" href="/workspaces">
+              Workspaces
               <ArrowRight className="h-4 w-4" />
-            </ButtonLink>
-            <ButtonLink variant="secondary" size="sm" href="/login?admin=1">
-              Administrator
             </ButtonLink>
             <ButtonLink variant="secondary" size="sm" href="/login">
               Log in
@@ -47,6 +46,7 @@ export default function Page() {
             <ButtonLink variant="default" size="sm" href="/signup">
               Get started
             </ButtonLink>
+            <ThemeToggle size="sm" />
           </nav>
         </div>
       </header>
@@ -58,7 +58,7 @@ export default function Page() {
             <div>
               <div className="mb-4 flex flex-wrap items-center gap-2">
                 <Badge variant="success">Works without an account</Badge>
-                <Badge variant="warn">Google sign-in coming soon</Badge>
+                <Badge variant="info">Google sign-in available</Badge>
               </div>
               <h1 className="text-balance text-4xl font-semibold tracking-tight md:text-5xl">
                 Plan semesters with prerequisite checks built in.
@@ -70,20 +70,12 @@ export default function Page() {
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <ButtonLink
-                  href="/planner"
+                  href="/workspaces"
                   size="lg"
                   className="justify-center"
                 >
-                  Open planner
+                  Open workspaces
                   <ArrowRight className="h-5 w-5" />
-                </ButtonLink>
-                <ButtonLink
-                  href="/login?admin=1"
-                  variant="secondary"
-                  size="lg"
-                  className="justify-center"
-                >
-                  Administrator
                 </ButtonLink>
                 <ButtonLink
                   href="/signup"
@@ -121,13 +113,8 @@ export default function Page() {
                   </div>
                   <Badge variant="neutral">Preview</Badge>
                 </div>
-                <div className="mt-4 grid gap-3">
-                  <div className="h-10 rounded-2xl border border-zinc-200 bg-white" />
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="h-24 rounded-2xl border border-zinc-200 bg-white" />
-                    <div className="col-span-2 h-24 rounded-2xl border border-zinc-200 bg-white" />
-                  </div>
-                  <div className="h-44 rounded-2xl border border-zinc-200 bg-white" />
+                <div className="mt-6 grid place-items-center rounded-3xl border border-zinc-200 bg-white p-8 shadow-soft">
+                  <PlanItLogo size={220} className="h-auto w-[220px]" priority />
                 </div>
                 <p className="mt-4 text-xs text-zinc-600">
                   Open the planner workspace to build a library, lay out terms,
@@ -184,16 +171,16 @@ export default function Page() {
               <div>
                 <h3 className="text-base font-semibold">Ready to try it?</h3>
                 <p className="mt-1 text-sm text-zinc-600">
-                  Open the planner now. Google sign-in will be wired up later.
+                  Open the planner now. Sign in with Google to attach your identity.
                 </p>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
                 <ButtonLink
-                  href="/planner"
+                    href="/workspaces"
                   variant="secondary"
                   className="justify-center"
                 >
-                  Open planner
+                    Open workspaces
                   <ArrowRight className="h-5 w-5" />
                 </ButtonLink>
                 <ButtonLink href="/login" className="justify-center">

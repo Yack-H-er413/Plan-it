@@ -1,56 +1,54 @@
-"use client";
-
-import * as React from "react";
+import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Label } from "@/components/ui/Label";
-import { Modal } from "@/components/ui/Modal";
-import { GoogleIcon } from "@/components/icons/GoogleIcon";
-import { ArrowRight, CalendarDays, CheckCircle2, LockKeyhole } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { PlanItLogo } from "@/components/branding/PlanItLogo";
+import { ArrowRight, CheckCircle2, LockKeyhole } from "lucide-react";
 
 type Mode = "login" | "signup";
 
 export function AuthScreen({ mode }: { mode: Mode }) {
   const isLogin = mode === "login";
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [adminOpen, setAdminOpen] = React.useState(false);
-  const [adminName, setAdminName] = React.useState("");
-  const [adminError, setAdminError] = React.useState<string | null>(null);
-
-  // If someone lands on /login?admin=1, open the admin modal automatically.
-  React.useEffect(() => {
-    if (!isLogin) return;
-    const wantsAdmin = searchParams.get("admin") === "1";
-    if (!wantsAdmin) return;
-    setAdminError(null);
-    setAdminOpen(true);
-  }, [isLogin, searchParams]);
 
   return (
     <div className="relative min-h-screen overflow-hidden">
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white via-zinc-50 to-zinc-100" />
       <div className="pointer-events-none absolute -top-24 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-gradient-to-br from-blue-200/50 via-fuchsia-200/30 to-emerald-200/30 blur-3xl" />
 
-      <div className="relative mx-auto grid w-full max-w-6xl gap-8 px-4 py-10 lg:grid-cols-2 lg:items-center">
-        {/* left */}
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-zinc-900 text-white shadow-soft">
-              <CalendarDays className="h-5 w-5" />
+
+      <header className="relative z-10">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-5">
+          <Link
+            href="/"
+            aria-label="Back to landing page"
+            className="flex items-center gap-3 rounded-2xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-zinc-200/70"
+          >
+            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-transparent shadow-soft">
+              <PlanItLogo size={40} className="h-10 w-10" priority />
             </div>
-            <div>
+            <div className="leading-tight">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold">Plan-it</span>
+                <Badge variant="info">{isLogin ? "Log in" : "Sign up"}</Badge>
               </div>
               <p className="text-xs text-zinc-600">Course mapping & prereq planning</p>
             </div>
-          </div>
+          </Link>
 
+          <nav className="flex items-center gap-2">
+            <ThemeToggle size="sm" />
+            <ButtonLink href="/workspaces" variant="ghost" size="sm">
+              Workspaces
+              <ArrowRight className="h-4 w-4" />
+            </ButtonLink>
+          </nav>
+        </div>
+      </header>
+      <div className="relative mx-auto grid w-full max-w-6xl gap-8 px-4 py-10 lg:grid-cols-2 lg:items-center">
+        {/* left */}
+        <div>
           <h1 className="mt-6 text-balance text-3xl font-semibold tracking-tight md:text-4xl">
             {isLogin ? "Welcome back" : "Create your account"}
           </h1>
@@ -85,8 +83,8 @@ export function AuthScreen({ mode }: { mode: Mode }) {
             <ButtonLink href="/" variant="ghost" size="sm">
               Back to landing
             </ButtonLink>
-            <ButtonLink href="/planner" variant="secondary" size="sm">
-              Open planner
+            <ButtonLink href="/workspaces" variant="secondary" size="sm">
+              Open workspaces
               <ArrowRight className="h-4 w-4" />
             </ButtonLink>
           </div>
@@ -106,29 +104,7 @@ export function AuthScreen({ mode }: { mode: Mode }) {
           </CardHeader>
           <CardContent>
             <div className="grid gap-4">
-              <Button
-                type="button"
-                variant="secondary"
-                className="h-11 w-full justify-center text-base"
-              >
-                <GoogleIcon className="h-5 w-5" />
-                Continue with Google
-              </Button>
-
-              {isLogin ? (
-                <Button
-                  type="button"
-                  variant="secondary"
-                  className="w-full justify-center"
-                  onClick={() => {
-                    setAdminError(null);
-                    setAdminName("");
-                    setAdminOpen(true);
-                  }}
-                >
-                  Administrator
-                </Button>
-              ) : null}
+              <GoogleSignInButton callbackUrl="/workspaces" />
 
               <div className="flex items-center justify-between gap-3 text-sm">
                 <p className="text-zinc-600">
@@ -148,59 +124,6 @@ export function AuthScreen({ mode }: { mode: Mode }) {
           </CardContent>
         </Card>
       </div>
-
-      <Modal
-        open={adminOpen}
-        onClose={() => setAdminOpen(false)}
-        title="Administrator access"
-        description="Enter a username to open the admin workspace (for aesthetics only)."
-        footer={
-          <div className="flex items-center justify-end gap-2">
-            <Button variant="secondary" onClick={() => setAdminOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
-                const trimmed = adminName.trim();
-                if (!trimmed) {
-                  setAdminError("Please enter a username.");
-                  return;
-                }
-                try {
-                  sessionStorage.setItem("planit_admin_username", trimmed);
-                } catch {
-                  // ignore
-                }
-                setAdminOpen(false);
-                router.push("/admin");
-              }}
-            >
-              Continue
-            </Button>
-          </div>
-        }
-      >
-        <div className="grid gap-3">
-          {adminError ? (
-            <div className="rounded-2xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
-              {adminError}
-            </div>
-          ) : null}
-
-          <div className="grid gap-2">
-            <Label>Username</Label>
-            <Input
-              value={adminName}
-              onChange={(e) => setAdminName(e.target.value)}
-              placeholder="e.g., advisor01"
-              autoFocus
-            />
-            <p className="text-xs text-zinc-600">
-              This isn’t saved to a database yet — it’s just to personalize the admin view.
-            </p>
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 }
