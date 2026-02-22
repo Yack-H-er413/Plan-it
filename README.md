@@ -1,42 +1,28 @@
 # Plan-it
 
-Next.js (App Router) prerequisite-aware semester planner.
+## Inspiration
+As first-year students, it has been very tumultuous to navigate our course roadmaps. As a way to combat the myriad graduation problems that stem from misunderstandings about requirements and prerequisites, we wanted to create a website that gives students options and alternatives for their schedules. 
 
-## Storage model (no database)
+## What it does
+Course planning can feel overwhelming - especially for first-generation and transfer students who may not have the same institutional guidance or familiarity with university or high school systems. Prerequisite chains are difficult to navigate, where one missed class can delay progress by an entire semester or more. And for students with learning disabilities, especially, requirement groups are hard to track in static documents, making it unclear which courses actually count toward degree requirements. Without clear, visual guidance, students are often left unsure whether they are truly staying on track for graduation when planning future semesters.
 
-Plan-it stores planner data in the browser.
+## How we built it
+* **Framework/UI:** Next.js (App Router) + React
+* **Language:** TypeScript
+* **Styling:** Tailwind CSS (via PostCSS + Autoprefixer)
+* **Auth:** Auth.js / NextAuth v5 (Google OAuth)
+* **Data persistence:** Browser `localStorage` (no backend DB)
+* **UI utilities:** Motion (animations), Lucide React (icons), `clsx` + `tailwind-merge` (class handling)
+* **Tooling:** ESLint for linting
 
-* **Not signed in:** data is saved under a local profile in `localStorage`.
-* **Signed in with Google:** data is saved under a Google-account namespace in `localStorage` (so switching accounts switches workspaces on that device).
+## Challenges we ran into
+We had a hard time trying to implement Google Authenticator for our login. My team had also found it challenging to get accustomed to using the terminal as well as the many commands that come with GitHub repositories. 
 
-There is no server-side database and no Google Drive integration.
+## Accomplishments that we're proud of
+We made a timely solution to a long-standing issue that is not only easy to use and understand, but also detailed. 
 
-## Development
+## What we learned
+We learned that communication is key within teamwork, distributing tasks regarding one's strengths so we can make the best version of our website in the limited time that we have, asking for help, and to keep things light-hearted and not stressful. 
 
-```bash
-npm install
-npm run dev
-```
-
-## Google Sign-in (Auth.js / NextAuth v5)
-
-1. Copy env template and fill values:
-
-```bash
-cp .env.example .env.local
-```
-
-2. Create a Google OAuth client in Google Cloud Console.
-
-Recommended local settings:
-
-* **Authorized JavaScript origins**: `http://localhost:3000`
-* **Authorized redirect URI**: `http://localhost:3000/api/auth/callback/google`
-
-3. Set these in `.env.local`:
-
-* `AUTH_SECRET` (generate with `npx auth secret`)
-* `AUTH_GOOGLE_ID`
-* `AUTH_GOOGLE_SECRET`
-
-Then run `npm run dev` and use **Log in / Sign up → Continue with Google**.
+## What's next for Plan-it
+In the future, we plan to expand the course map with more templates and an option for verified university advisor accounts. Verified advisors would be able to create and maintain templates for new courses and their prerequisites. They would provide school-specific course recommendations and allow the platform to sync with a university’s administration and surface the same official guidance to students attending that school. We could also incorporate AI to prefill information from the course catalog and student transcript. For now, we are proud to present Plan-It, a visual course mapping tool that helps students better understand their academic paths. Plan smarter. Graduate faster. Mapping your degree, one class at a time.
