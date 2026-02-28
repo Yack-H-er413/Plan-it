@@ -1,9 +1,10 @@
 import { AppShell } from "@/components/layout/AppShell";
 
-export default function Page({
-  params,
-}: {
-  params: { id: string };
-}) {
-  return <AppShell workspaceId={params.id} />;
+type PageProps = {
+  params: Promise<{ id: string }>;
+};
+
+export default async function Page({ params }: PageProps) {
+  const { id } = await params;
+  return <AppShell workspaceId={id} />;
 }
