@@ -1,11 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion, type HTMLMotionProps } from "motion/react";
 import { cn } from "./cn";
 import { springs } from "@/components/motion/tokens";
 
-type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+type Props = HTMLMotionProps<"button"> & {
   variant?: "default" | "secondary" | "ghost" | "danger";
   size?: "sm" | "md" | "lg" | "icon";
 };
