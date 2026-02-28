@@ -1,5 +1,8 @@
 # Plan-it
 
+## Try it out
+Vercel deployment: [https://plan-it-planner.vercel.app/](https://plan-it-planner.vercel.app/)
+
 ## Inspiration
 As first-year students, it has been very tumultuous to navigate our course roadmaps. As a way to combat the myriad graduation problems that stem from misunderstandings about requirements and prerequisites, we wanted to create a website that gives students options and alternatives for their schedules. 
 
