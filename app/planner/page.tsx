@@ -10,6 +10,14 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { PlanItLogo } from "@/components/branding/PlanItLogo";
 
 export default function Page() {
+  return (
+    <React.Suspense fallback={<PlannerFallback />}>
+      <PlannerRedirect />
+    </React.Suspense>
+  );
+}
+
+function PlannerRedirect() {
   const router = useRouter();
   const search = useSearchParams();
 
@@ -26,6 +34,14 @@ export default function Page() {
     router.replace("/workspaces");
   }, [router, search]);
 
+  return <PlannerShell status="Redirecting" message="Taking you to your workspaces…" />;
+}
+
+function PlannerFallback() {
+  return <PlannerShell status="Loading" message="Preparing planner…" />;
+}
+
+function PlannerShell({ status, message }: { status: string; message: string }) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-zinc-50 to-zinc-100 p-4">
       <header className="mx-auto flex w-full max-w-lg items-center justify-between gap-3 pt-4">
@@ -49,11 +65,9 @@ export default function Page() {
           <CardContent className="pt-6">
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="info">Planner</Badge>
-              <Badge variant="neutral">Redirecting</Badge>
+              <Badge variant="neutral">{status}</Badge>
             </div>
-            <p className="mt-3 text-sm text-zinc-700">
-              Taking you to your workspaces…
-            </p>
+            <p className="mt-3 text-sm text-zinc-700">{message}</p>
           </CardContent>
         </Card>
       </div>
