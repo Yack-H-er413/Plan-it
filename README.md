@@ -1,33 +1,5 @@
 # Plan-it
 
-## Development
-
-**Node.js:** 24.x (matches Vercel default)
-
-```bash
-npm install
-cp .env.example .env.local
-npm run dev
-```
-
-### Auth environment variables
-
-This project uses **Auth.js / NextAuth v5** with Google OAuth.
-
-Set these in `.env.local` (local dev) and as Environment Variables in Vercel:
-
-- `AUTH_SECRET`
-- `AUTH_GOOGLE_ID`
-- `AUTH_GOOGLE_SECRET`
-
-For deployments, also set either:
-
-- `AUTH_URL` (recommended for production), **or**
-- `AUTH_TRUST_HOST=true` (convenient for Vercel Preview deployments).
-
-> Google OAuth callback URL must include:
-> `https://<your-domain>/api/auth/callback/google`
-
 ## Inspiration
 As first-year students, it has been very tumultuous to navigate our course roadmaps. As a way to combat the myriad graduation problems that stem from misunderstandings about requirements and prerequisites, we wanted to create a website that gives students options and alternatives for their schedules. 
 
