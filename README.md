@@ -9,7 +9,7 @@ Course planning can feel overwhelming - especially for first-generation and tran
 ## How we built it
 * **Framework/UI:** Next.js (App Router) + React
 * **Language:** TypeScript
-* **Styling:** Tailwind CSS (via PostCSS)
+* **Styling:** Tailwind CSS (via PostCSS + Autoprefixer)
 * **Auth:** Auth.js / NextAuth v5 (Google OAuth)
 * **Data persistence:** Browser `localStorage` (no backend DB)
 * **UI utilities:** Motion (animations), Lucide React (icons), `clsx` + `tailwind-merge` (class handling)
