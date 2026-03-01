@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "Plan-it",
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AuthProvider>{children}</AuthProvider>
         </MotionProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
