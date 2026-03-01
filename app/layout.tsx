@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "Plan-it",
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <MotionProvider>
           <AuthProvider>{children}</AuthProvider>
         </MotionProvider>
+        <Analytics />
       </body>
     </html>
   );
