@@ -13,6 +13,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.6.1",
     "clsx": "2.1.1",
     "lucide-react": "0.575.0",
     "motion": "12.34.3",
@@ -23,6 +24,7 @@
     "tailwind-merge": "3.5.0"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "4.2.1",
     "@types/node": "25.3.2",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
@@ -30,8 +32,7 @@
     "eslint-config-next": "16.1.6",
     "postcss": "8.5.6",
     "tailwindcss": "4.2.1",
-    "typescript": "5.9.3",
-    "@tailwindcss/postcss": "4.2.1"
+    "typescript": "5.9.3"
   },
   "packageManager": "npm@10.9.2"
 }
