@@ -4,7 +4,7 @@
   <p><strong>Prerequisite-aware course planner built with Next.js, TypeScript, and Auth.js.</strong></p>
   <p>
     Plan smarter. Graduate faster. Mapping your degree, one class at a time.
-  </br></br>Try it out: https://plan-it-planner.vercel.app/
+  </br></br>Try it out: https://plan-it-planner.vercel.app
   </p>
 </div>
 
