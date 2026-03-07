@@ -8,7 +8,7 @@
   </p>
 </div>
 
-## About Plan-it
+## Why Plan-it
 
 Most degree planners are either static spreadsheets or rigid school-specific tools. Plan-it takes a more general product approach:
 
